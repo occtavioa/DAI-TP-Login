@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 app.post("/login", (req, res) => {
   let usuario = req.body;
 
-  if(usuario.nombre === "nombre" && usuario.contrasena === "contraseña") {
+  if(usuario.nombre === "nombre" && usuario.contraseña === "contraseña") {
       res.send("bien")
   } else {
       res.send("mal")
