@@ -1,57 +1,17 @@
-import axios from 'axios';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
-import { Button, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Login from "./Login";
+import Registro from "./Registro";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [nombre, setNombre] = useState("")
-  const [contraseña, setContraseña] = useState("")
-  const [respuesta, setRespuesta] = useState();
-
-  useEffect(() => {
-    console.log(nombre);
-  }, [nombre])
-
-  useEffect(() => {
-    console.log(contraseña);
-  }, [contraseña])
-
   return (
-    <View style={styles.container}>
-      <TextInput
-        placeholder='nombre'
-        onChangeText={n => {setNombre(n)}}
-        ></TextInput>
-      <TextInput
-        placeholder='contraseña'
-        onChangeText={c => {setContraseña(c)}}
-      ></TextInput>
-      <Pressable 
-        onPress={() => {
-          axios.post("http://localhost:5000/login", {
-            nombre: nombre,
-            contraseña: contraseña
-          })
-            .then(r => {
-              setRespuesta(r.data)
-            })
-            .catch(() => {setRespuesta("error")})
-        }}
-        title="login"
-      >
-        <Text>Login</Text>
-      </Pressable>
-      {
-        respuesta &&
-          <Text>
-            {respuesta}
-          </Text>
-      }
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login}></Stack.Screen>
+        <Stack.Screen name="Registro" component={Registro}></Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-  },
-});

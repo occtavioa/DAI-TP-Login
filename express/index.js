@@ -21,6 +21,16 @@ app.post("/login", (req, res) => {
   }
 })
 
+app.post("/registro", (req, res) => {
+  let usuario = req.body;
+
+  if(usuario.nombre === "" || usuario.contraseña === "") {
+      res.send("usuario invalido")
+  } else {
+    res.send("usuario añadido")
+  }
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
