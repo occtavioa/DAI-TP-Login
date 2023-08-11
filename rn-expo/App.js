@@ -15,7 +15,7 @@ export default function App() {
   useEffect(() => {
     console.log(contraseña);
   }, [contraseña])
-  
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -26,8 +26,8 @@ export default function App() {
         placeholder='contraseña'
         onChangeText={c => {setContraseña(c)}}
       ></TextInput>
-      <Button 
-        onPress={(e) => {
+      <Pressable 
+        onPress={() => {
           axios.post("http://localhost:5000/login", {
             nombre: nombre,
             contraseña: contraseña
@@ -38,7 +38,9 @@ export default function App() {
             .catch(() => {setRespuesta("error")})
         }}
         title="login"
-      ></Button>
+      >
+        <Text>Login</Text>
+      </Pressable>
       {
         respuesta &&
           <Text>
