@@ -1,11 +1,23 @@
-const express = require('express')
-const cors = require('cors')
+import express from 'express'
+import cors from 'cors'
+import bodyParser from 'body-parser'
+import sqlConfig from './dbconfig.js'
+import sql from "mssql"
+
 const app = express()
 const port = 5000
-const bodyParser = require('body-parser')
 
 app.use(cors())
 app.use(bodyParser.json())
+
+const connection = sql.connect(sqlConfig)
+  .then(pool => {
+    app.listen(port, () => {
+      console.log(`Example app listening on port ${port}`)
+    })
+    return pool
+  })
+  .catch(error => {console.log(error);})
 
 app.get('/', (req, res) => {
   res.send('Hello World!')

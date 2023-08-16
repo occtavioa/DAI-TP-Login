@@ -6,7 +6,7 @@ export default function Registro() {
   const [nombre, setNombre] = useState("")
   const [contraseña, setContraseña] = useState("")
   const [respuesta, setRespuesta] = useState()
-  
+
   return (
     <View>
       <TextInput
