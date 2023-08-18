@@ -1,6 +1,6 @@
 const sqlConfig = {
-    user: "",
-    password: "",
+    user: "daitplogin",
+    password: "daitplogin",
     database: "DAI-TP-Login",
     server: 'localhost',
     options: {
