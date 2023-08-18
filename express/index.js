@@ -39,10 +39,8 @@ app.post("/register", async (req, res) => {
   console.log(name, password);
   try {
     let result = await dbservice.register(name, password, connection)
-    console.log("usuario añadido", result);
     res.status(201).send("usuario añadido")
   } catch (error) {
-    console.log("usuario invalido", error);
     res.status(400).send("usuario invalido")
   }
 })
