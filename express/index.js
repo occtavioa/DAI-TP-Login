@@ -22,26 +22,34 @@ app.get('/', (req, res) => {
 app.post("/login", async (req, res) => {
   let { name, password } = req.body;
   console.log(name, password);
-  try {
-    let result = await dbservice.login(name, password, connection)
-    if(result.recordset.length !== 0) {
-      res.status(200).send("usuario logueado")
-    } else {
-      res.status(200).send("usuario invalido")
-    }
-  } catch (error) {
+  if(name === "" || password === "") {
     res.status(400).send("error")
+  } else {
+    try {
+      let result = await dbservice.login(name, password, connection)
+      if(result.recordset.length !== 0) {
+        res.status(200).send("usuario logueado")
+      } else {
+        res.status(200).send("usuario invalido")
+      }
+    } catch (error) {
+      res.status(400).send("error")
+    }
   }
 })
 
 app.post("/register", async (req, res) => {
   let { name, password } = req.body;
-  console.log(name, password);
-  try {
-    let result = await dbservice.register(name, password, connection)
-    res.status(201).send("usuario añadido")
-  } catch (error) {
-    res.status(400).send("usuario invalido")
+  if(name === "" || password === "") {
+    res.status(400).send("error")
+  } else {
+    try {
+      let result = await dbservice.register(name, password, connection)
+      console.log(result);
+      res.status(201).send("usuario añadido")
+    } catch (error) {
+      res.status(400).send("usuario invalido")
+    }
   }
 })
 
