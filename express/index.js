@@ -11,12 +11,7 @@ app.use(cors())
 app.use(bodyParser.json())
 
 const connection = sql.connect(sqlConfig)
-  .then(pool => {
-    app.listen(port, () => {
-      console.log(`Example app listening on port ${port}`)
-    })
-    return pool
-  })
+  .then(pool => pool)
   .catch(error => {console.log(error);})
 
 app.get('/', (req, res) => {
@@ -24,9 +19,9 @@ app.get('/', (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  let usuario = req.body;
+  let {name, password} = req.body;
 
-  if(usuario.nombre === "nombre" && usuario.contraseña === "contraseña") {
+  if(name === "nombre" && password === "contraseña") {
       res.send("bien")
   } else {
       res.send("mal")

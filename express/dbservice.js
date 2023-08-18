@@ -6,8 +6,24 @@ export default class dbservice {
         request
             .input("iname", sql.VarChar(), name)
             .input("ipassword", sql.VarChar(), password)
-            .query("SELECT (name, password) FROM Users WHERE name=@iname AND password = @ipassword")
-            .then(result => {console.log(result);})
-            .then(error => {console.log(error);})
+            .query("SELECT * FROM Users WHERE name=@iname AND password=@ipassword")
+            .then(result => result)
+            .catch(error => error)
+    }
+
+    static async register({name, password}, connection) {
+        const transaction = new sql.Transaction(connection)
+        transaction
+            .begin()
+            .then(transaction => {
+                const request = new sql.Request(transaction)
+                request
+                    .input("iname", sql.VarChar(), name)
+                    .input("ipassword", sql.VarChar(), password)
+                    .query("INSERT INTO Users VALUES (@iname, @ipassword)")
+                    .then(() => {transaction.commit()})
+                    .catch(error => console.log(error))
+            })
+            .catch(error => console.log(error))
     }
 }
