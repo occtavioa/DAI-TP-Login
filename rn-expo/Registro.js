@@ -24,9 +24,9 @@ export default function Registro() {
       <Pressable
         onPress={() => {
           axios
-            .post("http://localhost:5000/registro", {
-              nombre: nombre,
-              contraseña: contraseña,
+            .post("http://localhost:5000/register", {
+              name: nombre,
+              password: contraseña,
             })
             .then((r) => {
               setRespuesta(r.data);

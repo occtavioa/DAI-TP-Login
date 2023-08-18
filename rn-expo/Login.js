@@ -25,8 +25,8 @@ export default function Login({ navigation }) {
         onPress={() => {
           axios
             .post("http://localhost:5000/login", {
-              nombre: nombre,
-              contraseña: contraseña,
+              name: nombre,
+              password: contraseña,
             })
             .then((r) => {
               setRespuesta(r.data);
