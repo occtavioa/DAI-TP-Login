@@ -28,10 +28,15 @@ export default function Login({ navigation }) {
               name: nombre,
               password: contraseña,
             })
-            .then((r) => {
-              setRespuesta(r.data);
+            .then((response) => {
+              if(response.status === 200) {
+                navigation.navigate("Home", {id: response.data})
+              } else {
+                setRespuesta(response.statusText)
+              }
             })
-            .catch(() => {
+            .catch((error) => {
+              console.error(error);
               setRespuesta("error");
             });
         }}

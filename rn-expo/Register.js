@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
-export default function Registro() {
+export default function Register() {
   const [nombre, setNombre] = useState("")
   const [contraseña, setContraseña] = useState("")
   const [respuesta, setRespuesta] = useState()
