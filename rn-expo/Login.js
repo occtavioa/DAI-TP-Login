@@ -22,29 +22,31 @@ export default function Login({ navigation }) {
         }}
       ></TextInput>
       <Pressable
-        onPress={() => {
-          axios
-            .post("http://localhost:5000/login", {
-              name: nombre,
-              password: contraseña,
-            })
+        onPress={async () => {
+          axios.post("http://localhost:5000/login", {
+            name: nombre,
+            password: contraseña
+          }, {
+            validateStatus: false,
+          })
             .then((response) => {
+              console.log(response);
               if(response.status === 200) {
-                navigation.navigate("Home", {id: response.data})
+                navigation.navigate("Home", {id: response.data.Id})
               } else {
-                setRespuesta(response.statusText)
+                setRespuesta("usuario invalido")
               }
             })
             .catch((error) => {
               console.error(error);
-              setRespuesta("error");
-            });
+              setRespuesta(error.message)
+            })
         }}
       >
         <Text>Login</Text>
       </Pressable>
       <Pressable onPress={() => {
-        navigation.navigate("Registro")
+        navigation.navigate("Register")
       }}>
         <Text>No tengo cuenta</Text>
       </Pressable>

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
-export default function Register() {
+export default function Register({ navigation }) {
   const [nombre, setNombre] = useState("")
   const [contraseña, setContraseña] = useState("")
   const [respuesta, setRespuesta] = useState()
@@ -22,16 +22,22 @@ export default function Register() {
         }}
       ></TextInput>
       <Pressable
-        onPress={() => {
-          axios
-            .post("http://localhost:5000/register", {
-              name: nombre,
-              password: contraseña,
+        onPress={async () => {
+          axios.post("http://localhost:5000/register", {
+            name: nombre,
+            password: contraseña
+          }, {
+            validateStatus: false,
+          })
+            .then((response) => {
+              if(response.status === 201) {
+                setRespuesta("usuario creado")
+              } else {
+                setRespuesta("usuario invalido")
+              }
             })
-            .then((r) => {
-              setRespuesta(r.data);
-            })
-            .catch(() => {
+            .catch((error) => {
+              console.error(error);
               setRespuesta("error");
             });
         }}

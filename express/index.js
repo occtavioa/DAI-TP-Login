@@ -21,35 +21,54 @@ app.get('/', (req, res) => {
 
 app.post("/login", async (req, res) => {
   let { name, password } = req.body;
-  console.log(name, password);
-  if(name === "" || password === "") {
-    res.status(400).send("error")
+  if(!name || !password || name === "" || password === "") {
+    res.status(400).send()
   } else {
     try {
-      let result = await dbservice.login(name, password, connection)
-      if(result.recordset.length !== 0) {
-        res.status(200).send("usuario logueado")
+      let result = await dbservice.selectUserId(name, password, connection)
+      if(result.rowsAffected[0] === 0) {
+        res.status(404).send()
       } else {
-        res.status(200).send("usuario invalido")
+        res.status(200).send(result.recordset[0])
       }
     } catch (error) {
-      res.status(400).send("error")
+      console.error(error);
+      res.status(500).send()
     }
   }
 })
 
 app.post("/register", async (req, res) => {
   let { name, password } = req.body;
-  if(name === "" || password === "") {
-    res.status(400).send("error")
+  if(!name || !password || name === "" || password === "") {
+    res.status(400).send()
   } else {
     try {
-      let result = await dbservice.register(name, password, connection)
-      console.log(result);
-      res.status(201).send("usuario añadido")
+      await dbservice.insertUser(name, password, connection)
+      res.status(204).send()
     } catch (error) {
-      res.status(400).send("usuario invalido")
+      console.error(error);
+      res.status(500).send()
     }
+  }
+})
+
+app.get("/users/:id", async(req, res) => {
+  let {id} = req.params
+  id = parseInt(id)
+  if(!Number.isInteger(id)) {
+    res.status(400).send()
+  }
+  try {
+    let result = await dbservice.selectUserById(id)
+    if(result.rowsAffected[0] === 0) {
+      res.status(404).send()
+    } else {
+      res.status(200).send(result.recordset[0])
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send()
   }
 })
 
