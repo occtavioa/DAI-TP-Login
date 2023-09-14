@@ -1,6 +1,7 @@
 import { View } from "react-native-web";
 
-function Profile() {
+function Profile({route}) {
+    const {id} = route.params
     
     return (
         <View>

@@ -1,17 +1,17 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { View } from "react-native-web"
+import { Pressable, Text, View } from "react-native-web"
 
 function Home({route, navigation}) {
     const {id} = route.params
-    const [userIsCompleted, setUserIsCompleted] = useState()
+    const [user, setUser] = useState(new Object())
 
     useEffect(() => {
         axios.get(`http://localhost:5000/users/${id}`)
-            .then((response) => {
-                if(response.status === 200) {
-                    
-                }
+            .then((response) => response.data)
+            .then((user) => {
+                setUser(user)
+                console.log(user);
             })
             .catch((error) => {
                 console.error(error);
@@ -20,6 +20,15 @@ function Home({route, navigation}) {
 
     return (
         <View>
+            {
+                user.Name && user.Surname ?
+                    <Text>Bienvenido {user.Name} {user.Surname}</Text> :
+                    <Pressable onPress={() => {
+                        navigation.navigate("Profile", {id: id})
+                    }}>
+                        <Text>Completar perfil</Text>
+                    </Pressable>
+            }
         </View>
     )
 }

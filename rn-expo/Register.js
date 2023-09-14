@@ -30,7 +30,7 @@ export default function Register({ navigation }) {
             validateStatus: false,
           })
             .then((response) => {
-              if(response.status === 201) {
+              if(response.status === 204) {
                 setRespuesta("usuario creado")
               } else {
                 setRespuesta("usuario invalido")
