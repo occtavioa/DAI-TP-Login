@@ -20,12 +20,12 @@ app.get('/', (req, res) => {
 })
 
 app.post("/login", async (req, res) => {
-  let { name, password } = req.body;
-  if(!name || !password || name === "" || password === "") {
+  let { username, password } = req.body;
+  if(!username || !password || username === "" || password === "") {
     res.status(400).send()
   } else {
     try {
-      let result = await dbservice.selectUserId(name, password, connection)
+      let result = await dbservice.selectUserId(username, password, connection)
       if(result.rowsAffected[0] === 0) {
         res.status(404).send()
       } else {
@@ -39,12 +39,12 @@ app.post("/login", async (req, res) => {
 })
 
 app.post("/register", async (req, res) => {
-  let { name, password } = req.body;
-  if(!name || !password || name === "" || password === "") {
+  let { username, password } = req.body;
+  if(!username || !password || username === "" || password === "") {
     res.status(400).send()
   } else {
     try {
-      await dbservice.insertUser(name, password, connection)
+      await dbservice.insertUser(username, password, connection)
       res.status(204).send()
     } catch (error) {
       console.error(error);

@@ -24,7 +24,7 @@ export default function Register({ navigation }) {
       <Pressable
         onPress={async () => {
           axios.post("http://localhost:5000/register", {
-            name: nombre,
+            username: nombre,
             password: contraseña
           }, {
             validateStatus: false,

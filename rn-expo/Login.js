@@ -24,7 +24,7 @@ export default function Login({ navigation }) {
       <Pressable
         onPress={async () => {
           axios.post("http://localhost:5000/login", {
-            name: nombre,
+            username: nombre,
             password: contraseña
           }, {
             validateStatus: false,
