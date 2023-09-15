@@ -47,9 +47,15 @@ function Profile({route}) {
                             password: modifiedUser.Password,
                             name: modifiedUser.Name,
                             surname: modifiedUser.Surname,
+                        }, {
+                            validateStatus: false
                         })
-                            .then(() => {
-                                setUser(modifiedUser)
+                            .then((resposne) => {
+                                if(resposne.status === 200) {
+                                    setUser(modifiedUser)
+                                } else {
+                                    console.log("usuario invalido");
+                                }
                             })
                             .catch((error) => {
                                 console.error(error);

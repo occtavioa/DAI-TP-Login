@@ -21,12 +21,12 @@ app.get('/', (req, res) => {
 
 app.post("/login", async (req, res) => {
   let { username, password } = req.body;
-  if(!username || !password || username === "" || password === "") {
+  if(!username || !password || username.trim() === "" || password.trim() === "") {
     res.status(400).send()
   } else {
     try {
       let result = await dbservice.selectUserId(username, password, connection)
-      if(result.rowsAffected[0] === 0) {
+      if(result.recordset.length === 0) {
         res.status(404).send()
       } else {
         res.status(200).send(result.recordset[0])
@@ -40,11 +40,11 @@ app.post("/login", async (req, res) => {
 
 app.post("/register", async (req, res) => {
   let { username, password } = req.body;
-  if(!username || !password || username === "" || password === "") {
+  if(!username || !password || username.trim() === "" || password.trim() === "") {
     res.status(400).send()
   } else {
     try {
-      if((await dbservice.selectUserId(username, password, connection)).rowsAffected[0] === 0) {
+      if((await dbservice.selectUserByUsername(username, connection)).recordset.length !== 0) {
         res.status(400).send()
       } else {
         await dbservice.insertUser(username, password, connection)
@@ -65,7 +65,7 @@ app.get("/users/:id", async(req, res) => {
   }
   try {
     let result = await dbservice.selectUserById(id)
-    if(result.rowsAffected[0] === 0) {
+    if(result.recordset.length === 0) {
       res.status(404).send()
     } else {
       res.status(200).send(result.recordset[0])
@@ -84,10 +84,14 @@ app.put("/users/:id", async(req, res) => {
     res.status(400).send()
   }
   try {
-    if((await dbservice.updateUser(id, user, connection)).rowsAffected[0] !== 0) {
+    if((await dbservice.selectUserByUsername(user.username, connection)).recordset.length !== 0) {
       res.status(400).send()
     } else {
-      res.status(200).send()
+      if((await dbservice.updateUser(id, user, connection)).rowsAffected[0] === 0) {
+        res.status(400).send()
+      } else {
+        res.status(200).send()
+      }
     }
   } catch (error) {
     console.error(error);

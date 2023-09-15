@@ -28,10 +28,17 @@ export default class dbservice {
         let request = new sql.Request(connection)
         return await request
             .input("pId", sql.Int, id)
-            .input("pUsername", sql.VarChar(50), user.username)
+            .input("pUserName", sql.VarChar(50), user.username)
             .input("pPassword", sql.VarChar(50), user.password)
             .input("pName", sql.VarChar(50), user.name)
             .input("pSurname", sql.VarChar(50), user.surname)
             .query("UPDATE Users SET UserName=@pUserName, Password=@pPassword, Name=@pName, Surname=@pSurname WHERE Id=@pId")
+    }
+
+    static async selectUserByUsername(username, connection) {
+        let request = new sql.Request(connection)
+        return await request
+            .input("pUserName", sql.VarChar(50), username)
+            .query("SELECT * FROM Users WHERE UserName=@pUserName")
     }
 }

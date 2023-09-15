@@ -27,7 +27,7 @@ export default function Register({ navigation }) {
             username: nombre,
             password: contraseña
           }, {
-            validateStatus: false,
+            validateStatus: false
           })
             .then((response) => {
               if(response.status === 204) {
