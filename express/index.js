@@ -44,7 +44,7 @@ app.post("/register", async (req, res) => {
     res.status(400).send()
   } else {
     try {
-      if((await dbservice.selectUserId(username, password, connection)).rowsAffected[0] !== 0) {
+      if((await dbservice.selectUserId(username, password, connection)).rowsAffected[0] === 0) {
         res.status(400).send()
       } else {
         await dbservice.insertUser(username, password, connection)
@@ -69,6 +69,25 @@ app.get("/users/:id", async(req, res) => {
       res.status(404).send()
     } else {
       res.status(200).send(result.recordset[0])
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send()
+  }
+})
+
+app.put("/users/:id", async(req, res) => {
+  let {id} = req.params
+  id = parseInt(id)
+  let user = req.body
+  if(!Number.isInteger(id)) {
+    res.status(400).send()
+  }
+  try {
+    if((await dbservice.updateUser(id, user, connection)).rowsAffected[0] !== 0) {
+      res.status(400).send()
+    } else {
+      res.status(200).send()
     }
   } catch (error) {
     console.error(error);
