@@ -44,8 +44,12 @@ app.post("/register", async (req, res) => {
     res.status(400).send()
   } else {
     try {
-      await dbservice.insertUser(username, password, connection)
-      res.status(204).send()
+      if((await dbservice.selectUserId(username, password, connection)).rowsAffected[0] !== 0) {
+        res.status(400).send()
+      } else {
+        await dbservice.insertUser(username, password, connection)
+        res.status(204).send()
+      }
     } catch (error) {
       console.error(error);
       res.status(500).send()
