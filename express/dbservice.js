@@ -1,12 +1,12 @@
 import sql from "mssql";
 
 export default class dbservice {
-    static async selectUserId(username, password, connection) {
+    static async selectUserByCredentials(username, password, connection) {
         let request = new sql.Request(connection);
         return await request
             .input("pUserName", sql.VarChar(50), username)
             .input("pPassword", sql.VarChar(50), password)
-            .query("SELECT Id FROM Users WHERE UserName=@pUserName AND Password=@pPassword");
+            .query("SELECT * FROM Users WHERE UserName=@pUserName AND Password=@pPassword");
     }
 
     static async insertUser(username, password, connection) {
