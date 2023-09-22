@@ -1,24 +1,27 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native-web";
+import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 
 function Profile({route}) {
     const {id} = route.params
     const [user, setUser] = useState()
     const [modifiedUser, setModifiedUser] = useState()
     const [readOnlyForm, setReadOnlyForm] = useState(true)
+    const [respuesta, setRespuesta] = useState(false)
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/users/${id}`)
-            .then((response) => response.data)
-            .then((user) => {
-                setUser(user)
-                setModifiedUser(user)
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-    }, [])
+        if(id) {
+            axios.get(`http://localhost:5000/users/${id}`)
+                .then((response) => response.data)
+                .then((user) => {
+                    setUser(user)
+                    setModifiedUser(user)
+                })
+                .catch((error) => {
+                    console.error(error);
+                })
+        }
+    }, [id])
     
     useEffect(() => {
         setModifiedUser(user)
@@ -28,7 +31,9 @@ function Profile({route}) {
         <View>
             <Pressable onPress={() => {
                 setReadOnlyForm(!readOnlyForm)
-            }}>
+            }}
+                style={styles.pressable}
+            >
                 {
                     readOnlyForm ?
                         <Text>
@@ -40,8 +45,23 @@ function Profile({route}) {
                 }
             </Pressable>
             {
+                respuesta ?
+                    respuesta === 200 ?
+                        <Text style={styles.successMessage}>Usuario modificado</Text> :
+                        <Text style={styles.errorMessage}>
+                            {
+                                respuesta === 400 ?
+                                    <>Credenciales invalidas</> :
+                                respuesta === 500 ?
+                                    <>Error de red</> :
+                                    <>Error desconocido</>
+                            }
+                        </Text> :
+                    <></>
+            }
+            {
                 !readOnlyForm &&
-                    <Pressable onPress={() => {
+                    <Pressable onPress={async () => {
                         axios.put(`http://localhost:5000/users/${id}`, {
                             username: modifiedUser.UserName,
                             password: modifiedUser.Password,
@@ -53,14 +73,15 @@ function Profile({route}) {
                             .then((resposne) => {
                                 if(resposne.status === 200) {
                                     setUser(modifiedUser)
-                                } else {
-                                    console.log("usuario invalido");
                                 }
+                                setRespuesta(resposne.status)
                             })
                             .catch((error) => {
                                 console.error(error);
                             })
-                    }}>
+                        }}
+                        style={styles.pressable}
+                    >
                         <Text>
                             Guardar cambios
                         </Text>
@@ -69,15 +90,49 @@ function Profile({route}) {
             {
                 user ?
                     <>
-                        <TextInput value={modifiedUser.UserName} readOnly={readOnlyForm} onChangeText={(t) => {setModifiedUser({...modifiedUser, UserName: t})}}></TextInput>
-                        <TextInput value={modifiedUser.Password} readOnly={readOnlyForm} onChangeText={(t) => {setModifiedUser({...modifiedUser, Password: t})}}></TextInput>
-                        <TextInput value={modifiedUser.Name ? modifiedUser.Name : ""} readOnly={readOnlyForm} onChangeText={(t) => {setModifiedUser({...modifiedUser, Name: t})}}></TextInput>
-                        <TextInput value={modifiedUser.Surname ? modifiedUser.Surname : ""} readOnly={readOnlyForm} onChangeText={(t) => {setModifiedUser({...modifiedUser, Surname: t})}}></TextInput>
+                        <TextInput style={styles.textField} value={modifiedUser.UserName} readOnly={readOnlyForm} onChangeText={(t) => {setModifiedUser({...modifiedUser, UserName: t})}}></TextInput>
+                        <TextInput style={styles.textField} value={modifiedUser.Password} readOnly={readOnlyForm} onChangeText={(t) => {setModifiedUser({...modifiedUser, Password: t})}}></TextInput>
+                        <TextInput style={styles.textField} value={modifiedUser.Name ? modifiedUser.Name : ""} readOnly={readOnlyForm} onChangeText={(t) => {setModifiedUser({...modifiedUser, Name: t})}}></TextInput>
+                        <TextInput style={styles.textField} value={modifiedUser.Surname ? modifiedUser.Surname : ""} readOnly={readOnlyForm} onChangeText={(t) => {setModifiedUser({...modifiedUser, Surname: t})}}></TextInput>
                     </> :
                     <></>
             }
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    pressable: {
+      borderStyle: "solid",
+      borderWidth: "1px",
+      borderColor: "blue",
+      padding: ".5%",
+      borderRadius: "5px",
+      margin: ".1%"
+    },
+    textField: {
+      borderStyle: "solid",
+      borderWidth: "1px",
+      borderColor: "grey",
+      borderRadius: "5px",
+      margin: ".1%"
+    },
+    textFieldsContainer: {
+      margin: "1%",
+    },
+    errorMessage: {
+      borderStyle: "solid",
+      borderWidth: "1px",
+      borderColor: "red",
+      borderRadius: "5px",
+    },
+    successMessage: {
+      borderStyle: "solid",
+      borderWidth: "1px",
+      borderColor: "green",
+      borderRadius: "5px",
+    }
+  })
+  
 
 export default Profile
