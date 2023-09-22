@@ -8,9 +8,9 @@ export default function Register({ navigation }) {
   const [contraseña, setContraseña] = useState("")
   const [id, setId] = useState(null)
   const [respuesta, setRespuesta] = useState()
-  
+
   return (
-    <View style={{justifyContent: "center", alignItems: "center", height: "100%"}}>
+    <View style={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
 
       {
         respuesta ?

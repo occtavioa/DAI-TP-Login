@@ -9,22 +9,22 @@ export default function Login({ navigation }) {
   const [respuesta, setRespuesta] = useState(null);
 
   return (
-    <View style={{justifyContent: "center", alignItems: "center", height: "100%"}}>
+    <View style={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
       {
         respuesta &&
-          <Text style={styles.errorMessage}>
-            {
-              respuesta === 400 ?
-                <>Credenciales invalidas</> :
+        <Text style={styles.errorMessage}>
+          {
+            respuesta === 400 ?
+              <>Credenciales invalidas</> :
               respuesta === 404 ?
                 <>Usuario no encontrado</> :
-              respuesta === 500 ?
-                <>Error de red</> :
-                <>Error desconocido</>
-            }
-          </Text>
+                respuesta === 500 ?
+                  <>Error de red</> :
+                  <>Error desconocido</>
+          }
+        </Text>
       }
-      
+
       <View style={styles.textFieldsContainer}>
         <TextInput
           placeholder="nombre"
@@ -51,8 +51,8 @@ export default function Login({ navigation }) {
           })
             .then((response) => {
               console.log(response);
-              if(response.status === 200) {
-                navigation.navigate("Home", {id: response.data.Id})
+              if (response.status === 200) {
+                navigation.navigate("Home", { id: response.data.Id })
               } else {
                 setRespuesta(response.status)
               }
@@ -65,7 +65,7 @@ export default function Login({ navigation }) {
       >
         <Text>Login</Text>
       </Pressable>
-      <Link to={{screen: "Register"}} style={styles.pressable}>No tengo cuenta</Link>
+      <Link to={{ screen: "Register" }} style={styles.pressable}>No tengo cuenta</Link>
     </View>
   );
 }

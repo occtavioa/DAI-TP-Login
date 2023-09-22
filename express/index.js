@@ -48,7 +48,7 @@ app.post("/register", async (req, res) => {
         res.sendStatus(400)
       } else {
         await dbservice.insertUser(username, password, connection)
-        res.status(204).send()
+        res.sendStatus(204)
       }
     } catch (error) {
       console.error(error);
@@ -68,7 +68,7 @@ app.get("/users/:id", async (req, res) => {
       if (result.recordset.length === 0) {
         res.sendStatus(404)
       } else {
-        res.status(200).send(result.recordset[0])
+        res.status(200).json(result.recordset[0])
       }
     } catch (error) {
       console.error(error);
@@ -90,8 +90,7 @@ app.put("/users/:id", async (req, res) => {
         res.sendStatus(400)
       } else if ((await dbservice.updateUser(id, user, connection)).rowsAffected[0] === 0) {
         res.sendStatus(400)
-      }
-      else {
+      } else {
         res.sendStatus(200)
       }
     } catch (error) {

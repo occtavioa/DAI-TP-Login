@@ -3,13 +3,13 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { Pressable, Text, View, StyleSheet } from "react-native"
 
-function Home({route, navigation}) {
-    const {id} = route.params
+function Home({ route, navigation }) {
+    const { id } = route.params
     const [user, setUser] = useState(new Object())
     const [userIsCompleted, setUserIsCompleted] = useState()
 
     useEffect(() => {
-        if(id) {
+        if (id) {
             axios.get(`http://localhost:5000/users/${id}`)
                 .then((response) => response.data)
                 .then((user) => {
@@ -23,11 +23,11 @@ function Home({route, navigation}) {
     }, [id])
 
     useEffect(() => {
-        setUserIsCompleted((user.Name !== undefined) && (user.Surname !== undefined))
+        setUserIsCompleted((user.Name !== null) && (user.Surname !== null))
     }, [user])
 
     return (
-        <View style={{justifyItems: "center", alignItems: "center"}}>
+        <View style={{ justifyItems: "center", alignItems: "center" }}>
             {
                 userIsCompleted ?
                     <Text>
@@ -36,7 +36,7 @@ function Home({route, navigation}) {
                     :
                     <></>
             }
-            <Link to={{screen: "Profile", params: {id: id}}} style={styles.pressable}>
+            <Link to={{ screen: "Profile", params: { id: id } }} style={styles.pressable}>
                 {
                     userIsCompleted ?
                         <>Ver mi perfil</> :
