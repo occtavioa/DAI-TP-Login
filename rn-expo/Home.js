@@ -23,7 +23,7 @@ function Home({ route, navigation }) {
     }, [id])
 
     useEffect(() => {
-        setUserIsCompleted((user.Name !== null) && (user.Surname !== null))
+        setUserIsCompleted(user.Name !== null && user.Name !== "" && user.Surname !== null && user.Surname !== "")
     }, [user])
 
     return (
