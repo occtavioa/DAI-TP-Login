@@ -21,82 +21,83 @@ app.get('/', (req, res) => {
 
 app.post("/login", async (req, res) => {
   let { username, password } = req.body;
-  if(!username || !password || username.trim() === "" || password.trim() === "") {
-    res.status(400).send()
+  if (!username || !password || username.trim() === "" || password.trim() === "") {
+    res.sendStatus(400)
   } else {
     try {
       let result = await dbservice.selectUserByCredentials(username, password, connection)
-      if(result.recordset.length === 0) {
-        res.status(404).send()
+      if (result.recordset.length === 0) {
+        res.sendStatus(404)
       } else {
-        res.status(200).json({Id: result.recordset[0].Id})
+        res.status(200).json({ Id: result.recordset[0].Id })
       }
     } catch (error) {
       console.error(error);
-      res.status(500).send()
+      res.sendStatus(500)
     }
   }
 })
 
 app.post("/register", async (req, res) => {
   let { username, password } = req.body;
-  if(!username || !password || username.trim() === "" || password.trim() === "") {
-    res.status(400).send()
+  if (!username || !password || username.trim() === "" || password.trim() === "") {
+    res.sendStatus(400)
   } else {
     try {
-      if((await dbservice.selectUserByUsername(username, connection)).recordset.length !== 0) {
-        res.status(400).send()
+      if ((await dbservice.selectUserByUsername(username, connection)).recordset.length !== 0) {
+        res.sendStatus(400)
       } else {
         await dbservice.insertUser(username, password, connection)
         res.status(204).send()
       }
     } catch (error) {
       console.error(error);
-      res.status(500).send()
+      res.sendStatus(500)
     }
   }
 })
 
-app.get("/users/:id", async(req, res) => {
-  let {id} = req.params
+app.get("/users/:id", async (req, res) => {
+  let { id } = req.params
   id = parseInt(id)
-  if(!Number.isInteger(id)) {
-    res.status(400).send()
-  }
-  try {
-    let result = await dbservice.selectUserById(id)
-    if(result.recordset.length === 0) {
-      res.status(404).send()
-    } else {
-      res.status(200).send(result.recordset[0])
+  if (!Number.isInteger(id)) {
+    res.sendStatus(400)
+  } else {
+    try {
+      let result = await dbservice.selectUserById(id)
+      if (result.recordset.length === 0) {
+        res.sendStatus(404)
+      } else {
+        res.status(200).send(result.recordset[0])
+      }
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500)
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send()
   }
 })
 
-app.put("/users/:id", async(req, res) => {
-  let {id} = req.params
+app.put("/users/:id", async (req, res) => {
+  let { id } = req.params
   id = parseInt(id)
   let user = req.body
-  if(!Number.isInteger(id) || !user.username || !user.password || user.username.trim() === "" || user.password.trim() === "") {
-    res.status(400).send()
-  }
-  try {
-    let checkedUser = await dbservice.selectUserByUsername(user.username, connection)
-    if(checkedUser.recordset.length !== 0 && checkedUser.recordset[0].Id !== id) {
-      res.status(400).send()
-    } else {
-      if((await dbservice.updateUser(id, user, connection)).rowsAffected[0] === 0) {
-        res.status(400).send()
-      } else {
-        res.status(200).send()
+  if (!Number.isInteger(id) || !user.username || !user.password || user.username.trim() === "" || user.password.trim() === "") {
+    res.sendStatus(400)
+  } else {
+    try {
+      let checkedUser = await dbservice.selectUserByUsername(user.username, connection)
+      if (checkedUser.recordset.length !== 0 && checkedUser.recordset[0].Id !== id) {
+        res.sendStatus(400)
+      } else if ((await dbservice.updateUser(id, user, connection)).rowsAffected[0] === 0) {
+        res.sendStatus(400)
       }
+      else {
+        res.sendStatus(200)
+      }
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500)
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send()
   }
 })
 
