@@ -13,17 +13,8 @@ export default function Register({ navigation }) {
     <View style={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
 
       {
-        respuesta ?
-          respuesta === 204 ?
-            <Text style={styles.successMessage}>Usuario creado</Text> :
-            <Text style={styles.errorMessage}>
-              {
-                respuesta === 400 ?
-                  <>Usuario invalido</> :
-                  <>Error de red</>
-              }
-            </Text> :
-          <></>
+        respuesta &&
+          <Text style={respuesta === "Usuario creado" ? styles.successMessage : styles.errorMessage}>{respuesta}</Text>
       }
 
       <View style={styles.textFieldsContainer}>
@@ -47,14 +38,27 @@ export default function Register({ navigation }) {
           axios.post("http://localhost:5000/register", {
             username: nombre,
             password: contraseña
-          }, {
-            validateStatus: false
           })
             .then((response) => {
-              setRespuesta(response.status)
+              setRespuesta(
+                response.status === 204 ?
+                  "Usuario creado" :
+                  "Error desconocido"
+              )
             })
             .catch((error) => {
               console.error(error);
+              if(error.response) {
+                setRespuesta(
+                  error.response.status === 400 ?
+                    "Credenciales invalidas" :
+                    error.response.status === 500 ?
+                      "Error de servidor" :
+                      "Error desconocido"
+                )
+              } else {
+                setRespuesta("Error de red")
+              }
             })
         }}
         style={styles.pressable}

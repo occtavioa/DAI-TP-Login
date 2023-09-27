@@ -6,23 +6,13 @@ import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 export default function Login({ navigation }) {
   const [nombre, setNombre] = useState("");
   const [contraseña, setContraseña] = useState("");
-  const [respuesta, setRespuesta] = useState(null);
+  const [respuesta, setResupesta] = useState()
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
       {
         respuesta &&
-        <Text style={styles.errorMessage}>
-          {
-            respuesta === 400 ?
-              <>Credenciales invalidas</> :
-              respuesta === 404 ?
-                <>Usuario no encontrado</> :
-                respuesta === 500 ?
-                  <>Error de red</> :
-                  <>Error desconocido</>
-          }
-        </Text>
+        <Text style={styles.errorMessage}>{respuesta}</Text>
       }
 
       <View style={styles.textFieldsContainer}>
@@ -46,19 +36,31 @@ export default function Login({ navigation }) {
           axios.post("http://localhost:5000/login", {
             username: nombre,
             password: contraseña
-          }, {
-            validateStatus: false,
           })
             .then((response) => {
               console.log(response);
               if (response.status === 200) {
                 navigation.navigate("Home", { id: response.data.Id })
               } else {
-                setRespuesta(response.status)
+                setResupesta("Error desconocido")
               }
             })
             .catch((error) => {
-              console.error(error);
+              if(error.response) {
+                setResupesta(
+                  error.response.status === 400 ?
+                    "Credenciales invalidas" :
+                    error.response.status === 404 ?
+                      "Usuario no encontrado" :
+                      error.response.status === 500 ?
+                        "Error de servidor" :
+                        "Error desconocido"
+                )
+              } else if (error.request) {
+                setResupesta("Error de red")
+              } else {
+                setResupesta("Error desconocido")
+              }
             })
         }}
         style={styles.pressable}

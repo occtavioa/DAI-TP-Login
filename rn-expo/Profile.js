@@ -7,7 +7,7 @@ function Profile({ route }) {
     const [user, setUser] = useState()
     const [modifiedUser, setModifiedUser] = useState()
     const [readOnlyForm, setReadOnlyForm] = useState(true)
-    const [respuesta, setRespuesta] = useState(false)
+    const [respuesta, setRespuesta] = useState()
 
     useEffect(() => {
         if (id) {
@@ -24,8 +24,14 @@ function Profile({ route }) {
     }, [id])
 
     useEffect(() => {
-        setModifiedUser(user)
+        if(readOnlyForm) {
+            setModifiedUser(user)
+        }
     }, [readOnlyForm])
+
+    useEffect(() => {
+        console.log(respuesta);
+    }, [respuesta])
 
     return (
         <View style={{ alignItems: "center" }}>
@@ -46,19 +52,8 @@ function Profile({ route }) {
                     }
                 </Pressable>
                 {
-                    respuesta ?
-                        respuesta === 200 ?
-                            <Text style={[styles.successMessage, {margin: "1%"}]}>Usuario modificado</Text> :
-                            <Text style={[styles.errorMessage, {margin: "1%"}]}>
-                                {
-                                    respuesta === 400 ?
-                                        <>Credenciales invalidas</> :
-                                        respuesta === 500 ?
-                                            <>Error de red</> :
-                                            <>Error desconocido</>
-                                }
-                            </Text> :
-                        <></>
+                    respuesta &&
+                        <Text style={[respuesta === "Usuario modificado" ? styles.successMessage : styles.errorMessage, {margin: "1%"}]}>{respuesta}</Text>
                 }
                 {
                     !readOnlyForm &&
@@ -68,17 +63,32 @@ function Profile({ route }) {
                             password: modifiedUser.Password,
                             name: modifiedUser.Name,
                             surname: modifiedUser.Surname,
-                        }, {
-                            validateStatus: false
                         })
                             .then((response) => {
                                 if (response.status === 200) {
                                     setUser(modifiedUser)
                                 }
-                                setRespuesta(response.status)
+                                setRespuesta(
+                                    response.status === 200 ?
+                                        "Usuario modificado" :
+                                        "Error desconocido"
+                                )
                             })
                             .catch((error) => {
                                 console.error(error);
+                                if(error.response) {
+                                    setRespuesta(
+                                        error.response.status === 400 ?
+                                            "Credenciales invalidas" :
+                                            error.response.status === 500 ?
+                                                "Error de servidor" :
+                                                "Error desconocido"
+                                    )
+                                } else if (error.request) {
+                                    setRespuesta("Error de red")
+                                } else {
+                                    setRespuesta("Error desconocido")
+                                }
                             })
                     }}
                         style={[styles.pressable, {margin: "1%"}]}
