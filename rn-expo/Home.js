@@ -5,11 +5,11 @@ import { Pressable, Text, View, StyleSheet } from "react-native"
 
 function Home({ route, navigation }) {
     const { id } = route.params
-    const [user, setUser] = useState(new Object())
+    const [user, setUser] = useState({})
     const [userIsCompleted, setUserIsCompleted] = useState()
 
     useEffect(() => {
-        if (id) {
+        if (Number.isInteger(id)) {
             axios.get(`http://localhost:5000/users/${id}`)
                 .then((response) => response.data)
                 .then((user) => {

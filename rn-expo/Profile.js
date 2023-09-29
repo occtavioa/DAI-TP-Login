@@ -10,7 +10,7 @@ function Profile({ route }) {
     const [respuesta, setRespuesta] = useState()
 
     useEffect(() => {
-        if (id) {
+        if (Number.isInteger(id)) {
             axios.get(`http://localhost:5000/users/${id}`)
                 .then((response) => response.data)
                 .then((user) => {
@@ -28,10 +28,6 @@ function Profile({ route }) {
             setModifiedUser(user)
         }
     }, [readOnlyForm])
-
-    useEffect(() => {
-        console.log(respuesta);
-    }, [respuesta])
 
     return (
         <View style={{ alignItems: "center" }}>

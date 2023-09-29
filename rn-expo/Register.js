@@ -6,7 +6,6 @@ import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 export default function Register({ navigation }) {
   const [nombre, setNombre] = useState("")
   const [contraseña, setContraseña] = useState("")
-  const [id, setId] = useState(null)
   const [respuesta, setRespuesta] = useState()
 
   return (
