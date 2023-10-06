@@ -56,7 +56,7 @@ git clone https://github.com/occtavioa/DAI-TP-Login.git
 #### Backend
 ```
 cd express
-npm i
+npm install
 node index.js
 ```
 #### Frontend
@@ -71,7 +71,18 @@ yarn run web
 
 <!-- USAGE EXAMPLES -->
 ## Uso
-
+<b>Login:</b>
+Muestra un formulario para completar con tu nombre de usuario y contraseña
+![Login]
+<b>Home:</b>
+Te da la bienvenida en caso de haber completado los datos adicionales del perfil con un boton para verlo/modificarlo
+![Home]
+<b>Perfil:</b>
+Campos de texto con todos los datos del perfil, modificables en caso de apretar el boton de "Editar"
+![Profile]
+<b>Registro:</b>
+Formulario para registrarse con nombre de usuario y contraseña
+![Register]
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -86,8 +97,6 @@ yarn run web
 
 <!-- ACKNOWLEDGMENTS -->
 ## Agradecimientos
-
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
 * [Documentación de Expo](https://docs.expo.dev/)
 * [Documentación React Native](https://reactnative.dev/docs/getting-started)
@@ -104,3 +113,7 @@ Use this space to list resources you find helpful and would like to give credit 
 [SQL Server-url]: http://microsoft.com/es-ar/sql-server/sql-server-2022
 [Expo.js]: https://img.shields.io/badge/Expo-000.svg?style=for-the-badge&logo=EXPO&labelColor=000&logoColor=FFF
 [Expo.js-url]: https://expo.dev/
+[Login]: imgs/login.png
+[Home]: imgs/home.png
+[Profile]: imgs/profile.png
+[Register]: imgs/register.png
