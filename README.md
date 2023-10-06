@@ -94,8 +94,9 @@ Formulario para registrarse con nombre de usuario y contraseña
 
 <!-- CONTACT -->
 ## Contacto
-Octavio Arfa
-Luka Moskovich
+### Hecho por
+* Octavio Arfa
+* Luka Moskovich
 <!-- ACKNOWLEDGMENTS -->
 ## Agradecimientos
 
