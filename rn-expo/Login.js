@@ -2,10 +2,12 @@ import { Link } from "@react-navigation/native";
 import axios from "axios";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { app } from "./fbcontext";
 
 export default function Login({ navigation }) {
-  const [nombre, setNombre] = useState("");
-  const [contraseña, setContraseña] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [respuesta, setResupesta] = useState()
 
   return (
@@ -17,51 +19,37 @@ export default function Login({ navigation }) {
 
       <View style={styles.textFieldsContainer}>
         <TextInput
-          placeholder="nombre"
+          placeholder="email"
           onChangeText={(n) => {
-            setNombre(n);
+            setEmail(n);
           }}
           style={styles.textField}
         ></TextInput>
         <TextInput
           placeholder="contraseña"
           onChangeText={(c) => {
-            setContraseña(c);
+            setPassword(c);
           }}
+          secureTextEntry={true}
           style={styles.textField}
         ></TextInput>
       </View>
       <Pressable
         onPress={async () => {
-          axios.post("http://localhost:5000/login", {
-            username: nombre,
-            password: contraseña
-          })
-            .then((response) => {
-              console.log(response);
-              if (response.status === 200) {
-                navigation.navigate("Home", { id: response.data.Id })
-              } else {
-                setResupesta("Error desconocido")
-              }
+          const auth = getAuth(app);
+          signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              // Signed in 
+              const user = userCredential.user;
+              console.log(user);
+              // ...
             })
             .catch((error) => {
-              if(error.response) {
-                setResupesta(
-                  error.response.status === 400 ?
-                    "Credenciales invalidas" :
-                    error.response.status === 404 ?
-                      "Usuario no encontrado" :
-                      error.response.status === 500 ?
-                        "Error de servidor" :
-                        "Error desconocido"
-                )
-              } else if (error.request) {
-                setResupesta("Error de red")
-              } else {
-                setResupesta("Error desconocido")
-              }
-            })
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              setResupesta(errorMessage)
+              console.log(error);
+            });
         }}
         style={styles.pressable}
       >
