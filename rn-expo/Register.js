@@ -1,10 +1,8 @@
-import { Link } from "@react-navigation/native";
-import axios from "axios";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
-import { app, auth, db } from "./fbcontext";
-import { addDoc, doc, getFirestore, setDoc } from "firebase/firestore";
+import { auth, db } from "./fbcontext";
+import { doc } from "firebase/firestore";
 
 export default function Register() {
   const [email, setEmail] = useState("")
@@ -13,6 +11,10 @@ export default function Register() {
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
+      {
+        respuesta &&
+          <Text>{respuesta}</Text>
+      }
       <View style={styles.textFieldsContainer}>
         <TextInput
           placeholder="email"

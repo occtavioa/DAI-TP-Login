@@ -1,5 +1,4 @@
 import { Link } from "@react-navigation/native";
-import axios from "axios";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";

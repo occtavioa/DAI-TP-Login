@@ -1,4 +1,3 @@
-import axios from "axios";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
