@@ -9,12 +9,11 @@ function Profile({ route }) {
     const [user, setUser] = useState(null)
     const [modifiedUser, setModifiedUser] = useState(null)
     const [readOnlyForm, setReadOnlyForm] = useState(true)
-    const [respuesta, setRespuesta] = useState()
+    const [respuesta, setRespuesta] = useState(null)
 
     useEffect(() => {
         getDoc(doc(db, "users", id))
             .then((ds) => {
-                console.log(ds.data());
                 setUser(ds.data())
             })
             .catch((e) => {console.error(e);})
@@ -27,27 +26,19 @@ function Profile({ route }) {
     }, [readOnlyForm])
 
     useEffect(() => {
-        console.log(user);
         setModifiedUser(user)
     }, [user])
 
     return (
         <View style={{ alignItems: "center" }}>
             <View style={styles.buttonsContainer}>
-                <Pressable onPress={() => {
-                    setReadOnlyForm(!readOnlyForm)
-                }}
+                <Pressable
+                    onPress={() => {
+                        setReadOnlyForm(!readOnlyForm)
+                    }}
                     style={[styles.pressable, {margin: "1%"}]}
                 >
-                {
-                    readOnlyForm ?
-                        <Text>
-                            Editar
-                        </Text> :
-                        <Text>
-                            Visualizar
-                        </Text>
-                }
+                    <Text>{readOnlyForm ? <>Editar</> : <>Visualizar</>}</Text>
                 </Pressable>
                 {
                     respuesta &&
@@ -55,31 +46,30 @@ function Profile({ route }) {
                 }
                 {
                     !readOnlyForm &&
-                    <Pressable onPress={async () => {
-                        try {
-                            await setDoc(doc(db, "users", id), modifiedUser)
-                            setUser(modifiedUser)
-                            setRespuesta("Usuario modificado")
-                        } catch(e) {
-                            setRespuesta("Error")
-                            console.error(e);
-                        }
-                    }}
-                        style={[styles.pressable, {margin: "1%"}]}
-                    >
-                        <Text>
-                            Guardar cambios
-                        </Text>
-                    </Pressable>
+                        <Pressable onPress={async () => {
+                            try {
+                                await setDoc(doc(db, "users", id), modifiedUser)
+                                setUser(modifiedUser)
+                                setRespuesta("Usuario modificado")
+                            } catch(e) {
+                                setRespuesta("Error")
+                                console.error(e);
+                            }
+                        }}
+                            style={[styles.pressable, {margin: "1%"}]}
+                        >
+                            <Text>Guardar cambios</Text>
+                        </Pressable>
                 }
             </View>
             {
-                modifiedUser ?
+                modifiedUser &&
                     <View style={styles.textFieldsContainer}>
-                        <TextInput style={styles.textField} value={modifiedUser.name ? modifiedUser.name : ""} readOnly={readOnlyForm} onChangeText={(t) => { setModifiedUser({ ...modifiedUser, name: t }) }}></TextInput>
-                        <TextInput style={styles.textField} value={modifiedUser.surname ? modifiedUser.surname : ""} readOnly={readOnlyForm} onChangeText={(t) => { setModifiedUser({ ...modifiedUser, surname: t }) }}></TextInput>
-                    </View> :
-                    <></>
+                        <TextInput readOnly={true} value={modifiedUser.email} />
+                        <TextInput readOnly={true} value={modifiedUser.password} secureTextEntry={true} />
+                        <TextInput style={styles.textField} value={modifiedUser.name ? modifiedUser.name : ""} readOnly={readOnlyForm} onChangeText={(t) => { setModifiedUser({ ...modifiedUser, name: t }) }} />
+                        <TextInput style={styles.textField} value={modifiedUser.surname ? modifiedUser.surname : ""} readOnly={readOnlyForm} onChangeText={(t) => { setModifiedUser({ ...modifiedUser, surname: t }) }} />
+                    </View>
             }
         </View>
     )

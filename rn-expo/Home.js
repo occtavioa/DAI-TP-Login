@@ -7,39 +7,42 @@ import { db } from "./fbcontext"
 
 function Home({ route, navigation }) {
     const { id } = route.params
-    const [user, setUser] = useState({})
-    const [userIsCompleted, setUserIsCompleted] = useState()
+    const [user, setUser] = useState(null)
+    const [userIsCompleted, setUserIsCompleted] = useState(false)
 
     useEffect(() => {
         getDoc(doc(db, "users", id))
-            .then((u) => {
-                setUser(u.data())
+            .then((ds) => {
+                setUser(ds.data())
             })
             .catch((e) => {console.error((e))})
     }, [id])
 
     useEffect(() => {
-        console.log(user);
-        setUserIsCompleted(user.name !== null && user.name !== "" && user.surname !== null && user.surname !== "")
+        setUserIsCompleted(user && (user.name && (user.name !== "")) && (user.surname && (user.surname !== "")))
     }, [user])
 
     return (
         <View style={{ justifyItems: "center", alignItems: "center" }}>
             {
-                userIsCompleted ?
-                    <Text>
-                        Bienvenido {user.name} {user.surname}
-                    </Text>
-                    :
-                    <></>
+                (user && userIsCompleted) &&
+                    <>
+                        <Text>
+                            {
+                                userIsCompleted ?
+                                    <>Bienvenido {user.name} {user.surname}</> :
+                                    <>Completá tu perfil</>
+                            }
+                        </Text>
+                        <Link to={{ screen: "Profile", params: { id: id } }} style={styles.pressable}>
+                            {
+                                userIsCompleted ?
+                                    <>Ver mi perfil</> :
+                                    <>Completar perfil</>
+                            }
+                        </Link>
+                    </>
             }
-            <Link to={{ screen: "Profile", params: { id: id } }} style={styles.pressable}>
-                {
-                    userIsCompleted ?
-                        <>Ver mi perfil</> :
-                        <>Completar perfil</>
-                }
-            </Link>
         </View>
     )
 }

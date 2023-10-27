@@ -6,20 +6,13 @@ import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 import { app, auth, db } from "./fbcontext";
 import { addDoc, doc, getFirestore, setDoc } from "firebase/firestore";
 
-export default function Register({ navigation }) {
-  const [name, setName] = useState("")
+export default function Register() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [respuesta, setRespuesta] = useState()
+  const [respuesta, setRespuesta] = useState(null)
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
-
-      {
-        respuesta &&
-          <Text style={respuesta === "Usuario creado" ? styles.successMessage : styles.errorMessage}>{respuesta}</Text>
-      }
-
       <View style={styles.textFieldsContainer}>
         <TextInput
           placeholder="email"
@@ -47,8 +40,10 @@ export default function Register({ navigation }) {
               email: email,
               password: password
             })
+            setRespuesta("Usuario creado")
           } catch(e) {
             console.error(e);
+            setRespuesta("Error")
           }
         }}
         style={styles.pressable}

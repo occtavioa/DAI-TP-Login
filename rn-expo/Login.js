@@ -14,9 +14,8 @@ export default function Login({ navigation }) {
     <View style={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
       {
         respuesta &&
-        <Text style={styles.errorMessage}>{respuesta}</Text>
+          <Text style={styles.errorMessage}>{respuesta}</Text>
       }
-
       <View style={styles.textFieldsContainer}>
         <TextInput
           placeholder="email"
@@ -42,6 +41,7 @@ export default function Login({ navigation }) {
             navigation.navigate("Home", {id: user.uid})
           } catch(e) {
             console.error(e);
+            setResupesta("Error")
           }
         }}
         style={styles.pressable}
