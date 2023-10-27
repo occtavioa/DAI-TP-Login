@@ -1,7 +1,9 @@
 import { Link } from "@react-navigation/native"
 import axios from "axios"
+import { doc, getDoc } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { Pressable, Text, View, StyleSheet } from "react-native"
+import { db } from "./fbcontext"
 
 function Home({ route, navigation }) {
     const { id } = route.params
@@ -9,21 +11,16 @@ function Home({ route, navigation }) {
     const [userIsCompleted, setUserIsCompleted] = useState()
 
     useEffect(() => {
-        if (Number.isInteger(id)) {
-            axios.get(`http://localhost:5000/users/${id}`)
-                .then((response) => response.data)
-                .then((user) => {
-                    setUser(user)
-                    console.log(user);
-                })
-                .catch((error) => {
-                    console.error(error);
-                })
-        }
+        getDoc(doc(db, "users", id))
+            .then((u) => {
+                setUser(u.data())
+            })
+            .catch((e) => {console.error((e))})
     }, [id])
 
     useEffect(() => {
-        setUserIsCompleted(user.Name !== null && user.Name !== "" && user.Surname !== null && user.Surname !== "")
+        console.log(user);
+        setUserIsCompleted(user.name !== null && user.name !== "" && user.surname !== null && user.surname !== "")
     }, [user])
 
     return (
@@ -31,7 +28,7 @@ function Home({ route, navigation }) {
             {
                 userIsCompleted ?
                     <Text>
-                        Bienvenido {user.Name} {user.Surname}
+                        Bienvenido {user.name} {user.surname}
                     </Text>
                     :
                     <></>

@@ -37,19 +37,12 @@ export default function Login({ navigation }) {
       <Pressable
         onPress={async () => {
           const auth = getAuth(app);
-          signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-              // Signed in 
-              const user = userCredential.user;
-              console.log(user);
-              // ...
-            })
-            .catch((error) => {
-              const errorCode = error.code;
-              const errorMessage = error.message;
-              setResupesta(errorMessage)
-              console.log(error);
-            });
+          try {
+            const {user} = await signInWithEmailAndPassword(auth, email, password)
+            navigation.navigate("Home", {id: user.uid})
+          } catch(e) {
+            console.error(e);
+          }
         }}
         style={styles.pressable}
       >
