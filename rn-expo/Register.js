@@ -3,9 +3,11 @@ import axios from "axios";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
-import { auth } from "./fbcontext";
+import { app, auth, db } from "./fbcontext";
+import { addDoc, doc, getFirestore, setDoc } from "firebase/firestore";
 
 export default function Register({ navigation }) {
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [respuesta, setRespuesta] = useState()
@@ -37,7 +39,17 @@ export default function Register({ navigation }) {
       </View>
       <Pressable
         onPress={async () => {
-          createUserWithEmailAndPassword(auth, email, password)
+          try {
+            const {user} = await createUserWithEmailAndPassword(auth, email, password)
+            await setDoc(doc(db, "users", user.uid), {
+              name: "",
+              surname: "",
+              email: email,
+              password: password
+            })
+          } catch(e) {
+            console.error(e);
+          }
         }}
         style={styles.pressable}
       >
