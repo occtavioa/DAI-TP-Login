@@ -34,11 +34,13 @@ function Home({ route, navigation }) {
                             }
                         </Text>
                         <Link to={{ screen: "Profile", params: { id: id } }} style={styles.pressable}>
-                            {
+                            <Text>
+                                    {
                                 userIsCompleted ?
                                     <>Ver mi perfil</> :
                                     <>Completar perfil</>
-                            }
+                                    }
+                             </Text>
                         </Link>
                     </>
             }

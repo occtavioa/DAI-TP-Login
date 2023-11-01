@@ -1,80 +1,103 @@
 import { Link } from "@react-navigation/native";
 import { useState } from "react";
-import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
+import { Pressable, Text, TextInput, View, StyleSheet, ImageBackground } from "react-native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app } from "./fbcontext";
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  background: {
+    flex: 1,
+    resizeMode: "cover",
+  },
+  loginButton: {
+    backgroundColor: "green",
+    padding: 10,
+    borderRadius: 5,
+    margin: 10,
+    alignItems: "center",
+  },
+  loginButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  textField: {
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 5,
+    margin: 10,
+    padding: 10,
+    color: "white",
+  },
+  textFieldsContainer: {
+    margin: 10,
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 16,
+    margin: 10,
+    fontSize: 30,
+    textAlign: "center", 
+  },
+  noAccountLink: {
+    color: "blue",
+    margin: 10,
+    fontStyle: "italic",
+  },
+});
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [respuesta, setResupesta] = useState()
+  const [respuesta, setResupesta] = useState();
 
   return (
-    <View style={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
-      {
-        respuesta &&
-          <Text style={styles.errorMessage}>{respuesta}</Text>
-      }
-      <View style={styles.textFieldsContainer}>
-        <TextInput
-          placeholder="email"
-          onChangeText={(n) => {
-            setEmail(n);
+    <ImageBackground source={{ uri: 'https://images.pling.com/img/00/00/07/39/54/1047556/87818-1.png' }} style={styles.background}>
+      <View style={styles.container}>
+        <View style={styles.textFieldsContainer}>
+          <TextInput
+            placeholder="Email"
+            onChangeText={(n) => {
+              setEmail(n);
+            }}
+            style={styles.textField}
+            placeholderTextColor="white"
+          ></TextInput>
+          <TextInput
+            placeholder="Contraseña"
+            onChangeText={(c) => {
+              setPassword(c);
+            }}
+            secureTextEntry={true}
+            style={styles.textField}
+            placeholderTextColor="white"
+          ></TextInput>
+        </View>
+        {respuesta && <Text style={styles.errorMessage}>{respuesta}</Text>}
+        <Pressable
+          onPress={async () => {
+            const auth = getAuth(app);
+            try {
+              const { user } = await signInWithEmailAndPassword(auth, email, password)
+              navigation.navigate("Home", { id: user.uid })
+            } catch (e) {
+              console.error(e);
+              setResupesta("Error")
+            }
           }}
-          style={styles.textField}
-        ></TextInput>
-        <TextInput
-          placeholder="contraseña"
-          onChangeText={(c) => {
-            setPassword(c);
-          }}
-          secureTextEntry={true}
-          style={styles.textField}
-        ></TextInput>
+          style={styles.loginButton}
+        >
+          <Text style={styles.loginButtonText}>Login</Text>
+        </Pressable>
+        <Link to={{ screen: "Register" }} style={styles.noAccountLink}>
+          No tengo cuenta
+        </Link>
       </View>
-      <Pressable
-        onPress={async () => {
-          const auth = getAuth(app);
-          try {
-            const {user} = await signInWithEmailAndPassword(auth, email, password)
-            navigation.navigate("Home", {id: user.uid})
-          } catch(e) {
-            console.error(e);
-            setResupesta("Error")
-          }
-        }}
-        style={styles.pressable}
-      >
-        <Text>Login</Text>
-      </Pressable>
-      <Link to={{ screen: "Register" }} style={styles.pressable}>No tengo cuenta</Link>
-    </View>
+    </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  pressable: {
-    borderStyle: "solid",
-    borderWidth: "1px",
-    borderColor: "green",
-    padding: ".5%",
-    borderRadius: "5px",
-    margin: ".1%"
-  },
-  textField: {
-    borderStyle: "solid",
-    borderWidth: "1px",
-    borderColor: "grey",
-    borderRadius: "5px",
-    margin: ".1%"
-  },
-  textFieldsContainer: {
-    margin: "1%",
-  },
-  errorMessage: {
-    borderStyle: "solid",
-    borderWidth: "1px",
-    borderColor: "red",
-    borderRadius: "5px",
-  }
-})
