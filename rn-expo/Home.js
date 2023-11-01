@@ -24,7 +24,7 @@ function Home({ route, navigation }) {
     return (
         <View style={{ justifyItems: "center", alignItems: "center" }}>
             {
-                (user && userIsCompleted) &&
+                (user !== null) &&
                     <>
                         <Text>
                             {

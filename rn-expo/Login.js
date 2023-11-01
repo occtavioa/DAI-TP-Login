@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [respuesta, setResupesta] = useState();
+  const [respuesta, setResupesta] = useState(null);
 
   return (
     <ImageBackground source={{ uri: 'https://images.pling.com/img/00/00/07/39/54/1047556/87818-1.png' }} style={styles.background}>
