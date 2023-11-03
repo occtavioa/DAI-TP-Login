@@ -60,23 +60,25 @@ export default function Login({ navigation }) {
     <ImageBackground source={{ uri: 'https://images.pling.com/img/00/00/07/39/54/1047556/87818-1.png' }} style={styles.background}>
       <View style={styles.container}>
         <View style={styles.textFieldsContainer}>
-          <TextInput
-            placeholder="Email"
-            onChangeText={(n) => {
-              setEmail(n);
-            }}
-            style={styles.textField}
-            placeholderTextColor="white"
-          ></TextInput>
-          <TextInput
-            placeholder="Contraseña"
-            onChangeText={(c) => {
-              setPassword(c);
-            }}
-            secureTextEntry={true}
-            style={styles.textField}
-            placeholderTextColor="white"
-          ></TextInput>
+          <View style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+            <Text style={{color: "white"}}>Email</Text>
+            <TextInput
+              onChangeText={(n) => {
+                setEmail(n);
+              }}
+              style={styles.textField}
+            ></TextInput>
+          </View>
+          <View style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+            <Text style={{color: "white"}}>Contraseña</Text>
+            <TextInput
+              onChangeText={(c) => {
+                setPassword(c);
+              }}
+              secureTextEntry={true}
+              style={styles.textField}
+            ></TextInput>
+          </View>
         </View>
         {respuesta && <Text style={styles.errorMessage}>{respuesta}</Text>}
         <Pressable

@@ -2,6 +2,7 @@ import { Link } from "@react-navigation/native"
 import { doc, getDoc } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { Text, View, StyleSheet } from "react-native"
+import { ImageBackground } from "react-native-web"
 import { db } from "./fbcontext"
 
 function Home({ route, navigation }) {
@@ -22,41 +23,46 @@ function Home({ route, navigation }) {
     }, [user])
 
     return (
-        <View style={{ justifyItems: "center", alignItems: "center" }}>
-            {
-                (user !== null) &&
-                    <>
-                        <Text>
-                            {
-                                userIsCompleted ?
-                                    <>Bienvenido {user.name} {user.surname}</> :
-                                    <>Completá tu perfil</>
-                            }
-                        </Text>
-                        <Link to={{ screen: "Profile", params: { id: id } }} style={styles.pressable}>
-                            <Text>
-                                    {
-                                userIsCompleted ?
-                                    <>Ver mi perfil</> :
-                                    <>Completar perfil</>
-                                    }
-                             </Text>
-                        </Link>
-                    </>
-            }
-        </View>
+        <ImageBackground source={{ uri: 'https://images.pling.com/img/00/00/07/39/54/1047556/87818-1.png' }} style={styles.background}>
+            <View style={{display: "flex", flex: 1, justifyContent: "center", alignItems: "center" }}>
+                {
+                    (user !== null) &&
+                        <>
+                            <Text style={{color: "white"}}>
+                                {
+                                    userIsCompleted ?
+                                        <>Bienvenido {user.name} {user.surname}</> :
+                                        <>Completá tu perfil</>
+                                }
+                            </Text>
+                            <Link to={{ screen: "Profile", params: { id: id } }} style={styles.pressable}>
+                                <Text style={{color: "white"}}>
+                                        {
+                                    userIsCompleted ?
+                                        <>Ver mi perfil</> :
+                                        <>Completar perfil</>
+                                        }
+                                </Text>
+                            </Link>
+                        </>
+                }
+            </View>
+        </ImageBackground>
     )
 }
 
 const styles = StyleSheet.create({
     pressable: {
-        borderStyle: "solid",
-        borderWidth: "1px",
-        borderColor: "blue",
-        padding: ".5%",
-        borderRadius: "5px",
-        margin: ".1%"
-    }
+        backgroundColor: "blue",
+        padding: 10,
+        borderRadius: 5,
+        margin: 10,
+        alignItems: "center",
+    },
+    background: {
+        flex: 1,
+        resizeMode: "cover",
+    },
 })
 
 export default Home

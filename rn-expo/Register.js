@@ -62,23 +62,25 @@ export default function Register() {
       <View style={styles.container}>
         {respuesta && <Text style={respuesta === "Error" ? styles.errorMessage : styles.successMessage}>{respuesta}</Text>}
         <View style={styles.textFieldsContainer}>
-          <TextInput
-            placeholder="Email"
-            onChangeText={(n) => {
-              setEmail(n);
-            }}
-            style={styles.textField}
-            placeholderTextColor="white"
-          ></TextInput>
-          <TextInput
-            placeholder="Contraseña"
-            onChangeText={(c) => {
-              setPassword(c);
-            }}
-            secureTextEntry={true}
-            style={styles.textField}
-            placeholderTextColor="white"
-          ></TextInput>
+          <View style={{display: "flex", flexDirection: "row",alignContent: "center"}}>
+            <Text style={{color: "white"}}>Email</Text>
+            <TextInput
+              onChangeText={(e) => {
+                setEmail(e);
+              }}
+              style={styles.textField}
+            ></TextInput>
+          </View>
+          <View style={{display: "flex", flexDirection: "row",alignContent: "center"}}>
+            <Text style={{color: "white"}}>Contraseña</Text>
+            <TextInput
+              onChangeText={(c) => {
+                setPassword(c);
+              }}
+              secureTextEntry={true}
+              style={styles.textField}
+            ></TextInput>
+          </View>
         </View>
         <Pressable
           onPress={async () => {
