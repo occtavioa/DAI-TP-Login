@@ -36,8 +36,7 @@ La aplicación permite a los usuarios crear una cuenta con nombre de usuario y c
 
 ### Hecho con
 
-* [![Express.js][Express.js]][Express.js-url]
-* [![SQL Server][SQL Server]][SQL Server-url]
+* [![Firebase][Firebase]][Firebase-url]
 * [![Expo.js][Expo.js]][Expo.js-url]
 
 <!-- GETTING STARTED -->
@@ -46,29 +45,23 @@ La aplicación permite a los usuarios crear una cuenta con nombre de usuario y c
 Para correr la aplicación de manera local, siga las instrucciones.
 
 ### Prerrequisitos
-* <a href="https://nodejs.org/es">Node.js - npm</a>
-* <a href="https://www.microsoft.com/es-ar/sql-server/sql-server-downloads">SQL Server</a>
+* <a href="https://firebase.google.com/?hl=es">Firebase</a>
 * <a href="https://yarnpkg.com/getting-started/install">Yarn</a>
 ### Instalación
 ```
 git clone https://github.com/occtavioa/DAI-TP-Login.git
 ```
-#### Backend
-```
-cd express
-npm install
-node index.js
-```
+#### Firebase
+* Crear proyecto de firebase con nombre `DAI-TP-Login`
+* Agregar `Authentication`
+* Agregar `Firestore`
+* Crear una colección `users` en `Firestore`
 #### Frontend
 ```
 cd rn-expo
 yarn install
 yarn run web
 ```
-#### SQL Server
-* Crear login con nombre y contraseña 'daitplogin'
-* Ejecutar `script.sql`
-
 <!-- USAGE EXAMPLES -->
 ## Uso
 <b>Login:</b>
@@ -89,7 +82,7 @@ Formulario para registrarse con nombre de usuario y contraseña
 
 - [x] Registro e inicio de sesión de usuarios
 - [x] Modificar datos del perfil
-- [ ] Añadir más estilos
+- [x] Añadir más estilos
 
 
 <!-- CONTACT -->
@@ -105,7 +98,7 @@ Formulario para registrarse con nombre de usuario y contraseña
 * [MDN Web Docs](https://developer.mozilla.org/es/docs/Web)
 * [Documentación de Axios](https://axios-http.com/es/docs/intro)
 * [Documentación de React Navigation](https://reactnavigation.org/)
-
+* [Documentación de Firebase](https://firebase.google.com/docs?hl=es-419)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -119,3 +112,5 @@ Formulario para registrarse con nombre de usuario y contraseña
 [Home]: imgs/home.png
 [Profile]: imgs/profile.png
 [Register]: imgs/register.png
+[Firebase]: https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white
+[Firebase-url]: https://firebase.google.com/?hl=es
