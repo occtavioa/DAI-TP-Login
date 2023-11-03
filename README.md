@@ -109,8 +109,8 @@ Formulario para registrarse con nombre de usuario y contraseña
 [Expo.js]: https://img.shields.io/badge/Expo-000.svg?style=for-the-badge&logo=EXPO&labelColor=000&logoColor=FFF
 [Expo.js-url]: https://expo.dev/
 [Login]: imgs/login.png
-[Home]: 
-[Profile]: 
+[Home]: imgs/home.png
+[Profile]: imgs/profile.png
 [Register]: imgs/register.png
 [Firebase]: https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white
 [Firebase-url]: https://firebase.google.com/?hl=es
