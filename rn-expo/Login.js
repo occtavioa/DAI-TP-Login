@@ -1,6 +1,13 @@
 import { Link } from "@react-navigation/native";
 import { useState } from "react";
-import { Pressable, Text, TextInput, View, StyleSheet, ImageBackground } from "react-native";
+import {
+  Pressable,
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  ImageBackground,
+} from "react-native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app } from "./fbcontext";
 
@@ -42,7 +49,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     margin: 10,
     fontSize: 30,
-    textAlign: "center", 
+    textAlign: "center",
   },
   noAccountLink: {
     color: "blue",
@@ -54,14 +61,23 @@ const styles = StyleSheet.create({
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [respuesta, setResupesta] = useState(null);
+  const [response, setResponse] = useState(null);
 
   return (
-    <ImageBackground source={{ uri: 'https://images.pling.com/img/00/00/07/39/54/1047556/87818-1.png' }} style={styles.background}>
+    <ImageBackground
+      source={require("./assets/background.png")}
+      style={styles.background}
+    >
       <View style={styles.container}>
         <View style={styles.textFieldsContainer}>
-          <View style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-            <Text style={{color: "white"}}>Email</Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ color: "white" }}>Email</Text>
             <TextInput
               onChangeText={(n) => {
                 setEmail(n);
@@ -69,8 +85,14 @@ export default function Login({ navigation }) {
               style={styles.textField}
             ></TextInput>
           </View>
-          <View style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-            <Text style={{color: "white"}}>Contraseña</Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ color: "white" }}>Contraseña</Text>
             <TextInput
               onChangeText={(c) => {
                 setPassword(c);
@@ -80,16 +102,20 @@ export default function Login({ navigation }) {
             ></TextInput>
           </View>
         </View>
-        {respuesta && <Text style={styles.errorMessage}>{respuesta}</Text>}
+        {response && <Text style={styles.errorMessage}>{response}</Text>}
         <Pressable
           onPress={async () => {
             const auth = getAuth(app);
             try {
-              const { user } = await signInWithEmailAndPassword(auth, email, password)
-              navigation.navigate("Home", { id: user.uid })
+              const { user } = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+              );
+              navigation.navigate("Home", { id: user.uid });
             } catch (e) {
               console.error(e);
-              setResupesta("Error")
+              setResponse("Error");
             }
           }}
           style={styles.loginButton}

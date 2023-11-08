@@ -4,10 +4,14 @@ import Home from "./Home";
 import Login from "./Login";
 import Profile from "./Profile";
 import Register from "./Register";
+import { auth } from "./fbcontext";
+import { useEffect } from "react";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  auth.onAuthStateChanged((user) => {console.log("changed", user);})
+  
   return (
     <NavigationContainer>
       <Stack.Navigator>

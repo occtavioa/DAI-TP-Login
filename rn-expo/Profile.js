@@ -9,8 +9,8 @@ function Profile({ route }) {
   const [user, setUser] = useState(null);
   const [modifiedUser, setModifiedUser] = useState(null);
   const [readOnlyForm, setReadOnlyForm] = useState(true);
-  const [respuesta, setRespuesta] = useState(null);
-  const [securePasswordEntry, setSecurePasswordEntry] = useState(true)
+  const [response, setResponse] = useState(null);
+  const [securePasswordEntry, setSecurePasswordEntry] = useState(true);
 
   useEffect(() => {
     getDoc(doc(db, "users", id))
@@ -34,9 +34,7 @@ function Profile({ route }) {
 
   return (
     <ImageBackground
-      source={{
-        uri: "https://images.pling.com/img/00/00/07/39/54/1047556/87818-1.png",
-      }}
+      source={require("./assets/background.png")}
       style={styles.background}
     >
       <View style={{ alignItems: "center" }}>
@@ -51,15 +49,15 @@ function Profile({ route }) {
               {readOnlyForm ? <>Editar</> : <>Visualizar</>}
             </Text>
           </Pressable>
-          {respuesta && (
+          {response && (
             <Text
               style={
-                respuesta.type === "success"
+                response.type === "success"
                   ? styles.successMessage
                   : styles.errorMessage
               }
             >
-              {respuesta.message}
+              {response.message}
             </Text>
           )}
           {!readOnlyForm && (
@@ -68,12 +66,12 @@ function Profile({ route }) {
                 try {
                   await setDoc(doc(db, "users", id), modifiedUser);
                   setUser(modifiedUser);
-                  setRespuesta({
+                  setResponse({
                     type: "success",
                     message: "Usuario modificado",
                   });
                 } catch (e) {
-                  setRespuesta({ type: "error", message: "Error" });
+                  setResponse({ type: "error", message: "Error" });
                   console.error(e);
                 }
               }}
@@ -87,7 +85,11 @@ function Profile({ route }) {
           <View style={styles.textFieldsContainer}>
             <View style={styles.formField}>
               <Text style={{ color: "white" }}>Email</Text>
-              <TextInput readOnly={true} value={modifiedUser.email} style={styles.textField} />
+              <TextInput
+                readOnly={true}
+                value={modifiedUser.email}
+                style={styles.textField}
+              />
             </View>
             <View style={styles.formField}>
               <Text style={{ color: "white" }}>Contraseña</Text>
@@ -97,7 +99,16 @@ function Profile({ route }) {
                 secureTextEntry={securePasswordEntry}
                 style={styles.textField}
               />
-              <Pressable onPressIn={() => {setSecurePasswordEntry(false)}} onPressOut={() => {setSecurePasswordEntry(true)}}><Text style={{color: "white"}}>Mostrar</Text></Pressable>
+              <Pressable
+                onPressIn={() => {
+                  setSecurePasswordEntry(false);
+                }}
+                onPressOut={() => {
+                  setSecurePasswordEntry(true);
+                }}
+              >
+                <Text style={{ color: "white" }}>Mostrar</Text>
+              </Pressable>
             </View>
             <View style={styles.formField}>
               <Text style={{ color: "white" }}>Nombre</Text>
@@ -172,7 +183,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    textAlign: "center"
+    textAlign: "center",
   },
 });
 

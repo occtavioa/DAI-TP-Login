@@ -1,6 +1,13 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { Pressable, Text, TextInput, View, StyleSheet, ImageBackground, Alert } from "react-native";
+import {
+  Pressable,
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  ImageBackground,
+} from "react-native";
 import { auth, db } from "./fbcontext";
 import { doc, setDoc } from "firebase/firestore";
 
@@ -30,7 +37,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     margin: 10,
     fontSize: 30,
-    textAlign: "center", 
+    textAlign: "center",
   },
   successMessage: {
     color: "green",
@@ -55,15 +62,32 @@ const styles = StyleSheet.create({
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [respuesta, setRespuesta] = useState(null);
+  const [response, setResponse] = useState(null);
 
   return (
-    <ImageBackground source={{ uri: 'https://images.pling.com/img/00/00/07/39/54/1047556/87818-1.png' }} style={styles.background}>
+    <ImageBackground
+      source={require("./assets/background.png")}
+      style={styles.background}
+    >
       <View style={styles.container}>
-        {respuesta && <Text style={respuesta === "Error" ? styles.errorMessage : styles.successMessage}>{respuesta}</Text>}
+        {response && (
+          <Text
+            style={
+              response === "Error" ? styles.errorMessage : styles.successMessage
+            }
+          >
+            {response}
+          </Text>
+        )}
         <View style={styles.textFieldsContainer}>
-          <View style={{display: "flex", flexDirection: "row",alignContent: "center"}}>
-            <Text style={{color: "white"}}>Email</Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignContent: "center",
+            }}
+          >
+            <Text style={{ color: "white" }}>Email</Text>
             <TextInput
               onChangeText={(e) => {
                 setEmail(e);
@@ -71,8 +95,14 @@ export default function Register() {
               style={styles.textField}
             ></TextInput>
           </View>
-          <View style={{display: "flex", flexDirection: "row",alignContent: "center"}}>
-            <Text style={{color: "white"}}>Contraseña</Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignContent: "center",
+            }}
+          >
+            <Text style={{ color: "white" }}>Contraseña</Text>
             <TextInput
               onChangeText={(c) => {
                 setPassword(c);
@@ -85,18 +115,21 @@ export default function Register() {
         <Pressable
           onPress={async () => {
             try {
-              const { user } = await createUserWithEmailAndPassword(auth, email, password);
+              const { user } = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+              );
               await setDoc(doc(db, "users", user.uid), {
                 name: "",
                 surname: "",
                 email: email,
                 password: password,
               });
-              setRespuesta("Registrado con éxito");
-
+              setResponse("Registrado con éxito");
             } catch (e) {
               console.error(e);
-              setRespuesta("Error");
+              setResponse("Error");
             }
           }}
           style={styles.pressable}
