@@ -7,19 +7,19 @@ import { ImageBackground } from "react-native-web";
 import { auth, db } from "./fbcontext";
 
 function Home({ route }) {
-  const { id } = route.params;
+  const { id: uid } = route.params;
   const [user, setUser] = useState(null);
   const [userIsCompleted, setUserIsCompleted] = useState(false);
 
   useEffect(() => {
-    getDoc(doc(db, "users", id))
+    getDoc(doc(db, "users", auth.currentUser.uid))
       .then((ds) => {
         setUser(ds.data());
       })
       .catch((e) => {
         console.error(e);
       });
-  }, [id]);
+  }, [auth.currentUser.uid]);
 
   useEffect(() => {
     setUserIsCompleted(
@@ -31,10 +31,6 @@ function Home({ route }) {
     );
   }, [user]);
 
-  useEffect(() => {
-    console.log(auth);
-  }, [])
-  
   return (
     <ImageBackground
       source={require("./assets/background.png")}
@@ -52,15 +48,13 @@ function Home({ route }) {
           <>
             <Text style={{ color: "white" }}>
               {userIsCompleted ? (
-                <>
-                  Bienvenido {user.name} {user.surname}
-                </>
+                <>Bienvenido {user.name} {user.surname}</>
               ) : (
                 <>Completá tu perfil</>
               )}
             </Text>
             <Link
-              to={{ screen: "Profile", params: { id: id } }}
+              to={{ screen: "Profile" }}
               style={styles.pressable}
             >
               <Text style={{ color: "white" }}>

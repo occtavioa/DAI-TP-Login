@@ -112,7 +112,6 @@ export default function Login({ navigation }) {
                 email,
                 password
               );
-              navigation.navigate("Home", { id: user.uid });
             } catch (e) {
               console.error(e);
               setResponse("Error");

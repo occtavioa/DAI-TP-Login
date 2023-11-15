@@ -2,10 +2,9 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 import { ImageBackground } from "react-native-web";
-import { db } from "./fbcontext";
+import { auth, db } from "./fbcontext";
 
 function Profile({ route }) {
-  const { id } = route.params;
   const [user, setUser] = useState(null);
   const [modifiedUser, setModifiedUser] = useState(null);
   const [readOnlyForm, setReadOnlyForm] = useState(true);
@@ -13,14 +12,14 @@ function Profile({ route }) {
   const [securePasswordEntry, setSecurePasswordEntry] = useState(true);
 
   useEffect(() => {
-    getDoc(doc(db, "users", id))
+    getDoc(doc(db, "users", auth.currentUser.uid))
       .then((ds) => {
         setUser(ds.data());
       })
       .catch((e) => {
         console.error(e);
       });
-  }, [id]);
+  }, [auth.currentUser.uid]);
 
   useEffect(() => {
     if (readOnlyForm) {
@@ -64,7 +63,7 @@ function Profile({ route }) {
             <Pressable
               onPress={async () => {
                 try {
-                  await setDoc(doc(db, "users", id), modifiedUser);
+                  await setDoc(doc(db, "users", auth.currentUser.uid), modifiedUser);
                   setUser(modifiedUser);
                   setResponse({
                     type: "success",
