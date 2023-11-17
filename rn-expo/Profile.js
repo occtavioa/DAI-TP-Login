@@ -1,20 +1,25 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { Link } from "@react-navigation/native";
+import { collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
+import { Pressable, Text, TextInput, View, StyleSheet, FlatList } from "react-native";
 import { ImageBackground } from "react-native-web";
 import { auth, db } from "./fbcontext";
 
 function Profile({ route }) {
-  const [user, setUser] = useState(null);
-  const [modifiedUser, setModifiedUser] = useState(null);
+  const tasksCollectionsRef = collection(db, "taskscollection")
+  const [user, setUser] = useState();
+  const [userDocRef, setUserDocRef] = useState()
+  const [tasksCollections, setTasksCollections] = useState([])
+  const [modifiedUser, setModifiedUser] = useState();
   const [readOnlyForm, setReadOnlyForm] = useState(true);
-  const [response, setResponse] = useState(null);
+  const [response, setResponse] = useState();
   const [securePasswordEntry, setSecurePasswordEntry] = useState(true);
 
   useEffect(() => {
     getDoc(doc(db, "users", auth.currentUser.uid))
       .then((ds) => {
         setUser(ds.data());
+        setUserDocRef(ds.ref)
       })
       .catch((e) => {
         console.error(e);
@@ -30,6 +35,21 @@ function Profile({ route }) {
   useEffect(() => {
     setModifiedUser(user);
   }, [user]);
+
+  useEffect(() => {
+    if(typeof userDocRef !== "undefined") {
+      const q = query(tasksCollectionsRef, where("idUser", "==", userDocRef))
+      getDocs(q)
+        .then((qs) => {
+          setTasksCollections(qs.docs)
+        })
+        .catch((e) => {console.error(e);})
+    }
+  }, [userDocRef])
+
+  useEffect(() => {
+    console.log(tasksCollections);
+  }, [tasksCollections])
 
   return (
     <ImageBackground
@@ -48,7 +68,7 @@ function Profile({ route }) {
               {readOnlyForm ? <>Editar</> : <>Visualizar</>}
             </Text>
           </Pressable>
-          {response && (
+          {typeof response !== "undefined" && (
             <Text
               style={
                 response.type === "success"
@@ -63,7 +83,7 @@ function Profile({ route }) {
             <Pressable
               onPress={async () => {
                 try {
-                  await setDoc(doc(db, "users", auth.currentUser.uid), modifiedUser);
+                  await setDoc(userDocRef, modifiedUser);
                   setUser(modifiedUser);
                   setResponse({
                     type: "success",
@@ -80,7 +100,7 @@ function Profile({ route }) {
             </Pressable>
           )}
         </View>
-        {modifiedUser && (
+        {typeof modifiedUser !== "undefined" && (
           <View style={styles.textFieldsContainer}>
             <View style={styles.formField}>
               <Text style={{ color: "white" }}>Email</Text>
@@ -113,7 +133,7 @@ function Profile({ route }) {
               <Text style={{ color: "white" }}>Nombre</Text>
               <TextInput
                 style={styles.textField}
-                value={modifiedUser.name ? modifiedUser.name : ""}
+                value={typeof modifiedUser.name === "string" ? modifiedUser.name : ""}
                 readOnly={readOnlyForm}
                 onChangeText={(t) => {
                   setModifiedUser({ ...modifiedUser, name: t });
@@ -124,7 +144,7 @@ function Profile({ route }) {
               <Text style={{ color: "white" }}>Apellido</Text>
               <TextInput
                 style={styles.textField}
-                value={modifiedUser.surname ? modifiedUser.surname : ""}
+                value={typeof modifiedUser.surname === "string" ? modifiedUser.surname : ""}
                 readOnly={readOnlyForm}
                 onChangeText={(t) => {
                   setModifiedUser({ ...modifiedUser, surname: t });
@@ -133,6 +153,14 @@ function Profile({ route }) {
             </View>
           </View>
         )}
+        <Text style={{color: "white"}}>Mis colleciones</Text>
+        <FlatList
+          data={tasksCollections}
+          renderItem={({item}) => <Link to={{screen: "Collection", params: {id: item.id}}} style={styles.taskCollection}>{item.data().name}</Link>}
+        />
+        <Pressable style={styles.pressable}>
+          <Text style={{color: "white"}}>Agregar colleción</Text>
+        </Pressable>
       </View>
     </ImageBackground>
   );
@@ -184,6 +212,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
   },
+  taskCollection: {
+    paddingVertical: "5px",
+    paddingHorizontal: "10px",
+    color: "white",
+    backgroundColor: "green",
+    borderRadius: 5
+  }
 });
 
 export default Profile;
