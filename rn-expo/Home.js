@@ -1,14 +1,20 @@
 import { Link } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { ImageBackground } from "react-native-web";
 import { auth, db } from "./fbcontext";
 
 function Home({ route }) {
-  // const { id: uid } = route.params;
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState();
   const [userIsCompleted, setUserIsCompleted] = useState(false);
 
   useEffect(() => {
@@ -23,10 +29,10 @@ function Home({ route }) {
 
   useEffect(() => {
     setUserIsCompleted(
-      user &&
-        user.name &&
+      typeof user !== "undefined" &&
+        typeof user.name === "string" &&
         user.name !== "" &&
-        user.surname &&
+        typeof user.surname === "string" &&
         user.surname !== ""
     );
   }, [user]);
@@ -44,25 +50,20 @@ function Home({ route }) {
           alignItems: "center",
         }}
       >
-        {user !== null && (
-          <>
-            <Text style={{ color: "white" }}>
-              {userIsCompleted ? (
-                <>Bienvenido {user.name} {user.surname}</>
-              ) : (
-                <>Completá tu perfil</>
-              )}
-            </Text>
-            <Link
-              to={{ screen: "Profile" }}
-              style={styles.pressable}
-            >
-              <Text style={{ color: "white" }}>
-                {userIsCompleted ? <>Ver mi perfil</> : <>Completar perfil</>}
-              </Text>
-            </Link>
-          </>
-        )}
+        <Text style={{ color: "white" }}>
+          {userIsCompleted ? (
+            <>
+              Bienvenido {user.name} {user.surname}
+            </>
+          ) : (
+            <>Completá tu perfil</>
+          )}
+        </Text>
+        <Link to={{ screen: "Profile" }} style={styles.pressable}>
+          <Text style={{ color: "white" }}>
+            {userIsCompleted ? <>Ver mi perfil</> : <>Completar perfil</>}
+          </Text>
+        </Link>
       </View>
     </ImageBackground>
   );

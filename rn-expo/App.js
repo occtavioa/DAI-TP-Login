@@ -6,6 +6,7 @@ import Profile from "./Profile";
 import Register from "./Register";
 import { auth } from "./fbcontext";
 import { useEffect, useState } from "react";
+import Collection from "./Collection";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ export default function App() {
           <>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Collection" component={Collection} />
           </>
         ) : (
           <>
