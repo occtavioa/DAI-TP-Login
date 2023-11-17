@@ -1,7 +1,7 @@
 import { Link } from "@react-navigation/native";
-import { collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Pressable, Text, TextInput, View, StyleSheet, FlatList } from "react-native";
+import { Pressable, Text, TextInput, View, StyleSheet, FlatList, Modal } from "react-native";
 import { ImageBackground } from "react-native-web";
 import { auth, db } from "./fbcontext";
 
@@ -14,6 +14,8 @@ function Profile({ route }) {
   const [readOnlyForm, setReadOnlyForm] = useState(true);
   const [response, setResponse] = useState();
   const [securePasswordEntry, setSecurePasswordEntry] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false)
+  const [newCollectionName, setNewCollectionName] = useState("")
 
   useEffect(() => {
     getDoc(doc(db, "users", auth.currentUser.uid))
@@ -158,9 +160,23 @@ function Profile({ route }) {
           data={tasksCollections}
           renderItem={({item}) => <Link to={{screen: "Collection", params: {id: item.id}}} style={styles.taskCollection}>{item.data().name}</Link>}
         />
-        <Pressable style={styles.pressable}>
+        <Pressable style={styles.pressable} onPress={() => {setModalVisible(true)}}>
           <Text style={{color: "white"}}>Agregar colleción</Text>
         </Pressable>
+        <Modal visible={modalVisible}>
+            <Pressable onPress={() => {setModalVisible(false)}}><Text>Cerrar</Text></Pressable>
+            <TextInput value={newCollectionName} onChangeText={setNewCollectionName}></TextInput>
+            <Pressable onPress={async () => {
+              try {
+                const docRef = await addDoc(collection(db, "taskscollection"), {idUser: userDocRef, name: newCollectionName})
+                const collDoc = await getDoc(doc(db, "taskscollection", docRef.id))
+                setTasksCollections(tasksCollections.toSpliced(0, 0, collDoc))
+              } catch (error) {
+                console.error(error);
+              }
+              setModalVisible(false)
+            }}><Text>Agregar colección</Text></Pressable>
+        </Modal>
       </View>
     </ImageBackground>
   );

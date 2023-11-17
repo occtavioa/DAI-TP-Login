@@ -1,12 +1,14 @@
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { FlatList, ImageBackground, Pressable, Text, View } from "react-native";
+import { FlatList, ImageBackground, Modal, Pressable, Text, TextInput, View } from "react-native";
 import { db } from "./fbcontext";
 
 function Collection({ route }) {
     const {id} = route.params
     const [tasksCollection, setTasksCollection] = useState()
     const [tasks, setTasks] = useState([])
+    const [modalVisible, setModalVisible] = useState(false)
+    const [newTaskName, setNewTaskName] = useState("")
     
     useEffect(() => {
         getDoc(doc(db, "taskscollection", id))
@@ -21,19 +23,29 @@ function Collection({ route }) {
             .then((qs) => {setTasks(qs.docs)})
             .catch((e) => {console.error(e);})
     }, [tasksCollection])
-
-    useEffect(() => {
-        console.log("Tasks", tasks);
-    }, [tasks])
-
-    useEffect(() => {
-        console.log("Collection", tasksCollection);
-    }, [tasksCollection])
     
     return (
         <ImageBackground src={require("./assets/background.png")}>
             <View>
-                <FlatList data={tasks} renderItem={({item}) => <Text>{item.data().name}</Text>}/>
+                <FlatList data={tasks} renderItem={({item}) => (<>
+                    <Text>{item.data().name}</Text>
+                    <Text>{item.data().state}</Text>
+                </>)}/>
+                <Pressable onPress={() => {setModalVisible(true)}}><Text>Agregar tarea</Text></Pressable>
+                <Modal visible={modalVisible}>
+                    <Pressable onPress={() => {setModalVisible(false)}}><Text>Cerrar</Text></Pressable>
+                    <TextInput value={newTaskName} onChangeText={setNewTaskName}></TextInput>
+                    <Pressable onPress={async () => {
+                        try {
+                            const docRef = await addDoc(collection(db, "tasks"), {idCollection: tasksCollection.ref, name: newTaskName, state: "todo"})
+                            const taskDoc = await getDoc(doc(db, "tasks", docRef.id))
+                            setTasks(tasks.toSpliced(0, 0, taskDoc))
+                        } catch (error) {
+                            console.error(error);
+                        }
+                        setModalVisible(false)
+                    }}><Text>Crear</Text></Pressable>
+                </Modal>
             </View>
         </ImageBackground>
     )
