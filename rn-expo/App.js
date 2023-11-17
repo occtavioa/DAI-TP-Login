@@ -5,22 +5,31 @@ import Login from "./Login";
 import Profile from "./Profile";
 import Register from "./Register";
 import { auth } from "./fbcontext";
+import { useEffect, useState } from "react";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  auth.onAuthStateChanged((user) => {console.log(user);})
-  
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  auth.onAuthStateChanged((user) => {
+    setIsSignedIn(user !== null);
+  });
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {
-          auth.currentUser === null ?
-            <><Stack.Screen name="Login" component={Login}></Stack.Screen>
-            <Stack.Screen name="Register" component={Register}></Stack.Screen></> :
-            <><Stack.Screen name="Home" component={Home}></Stack.Screen>
-            <Stack.Screen name="Profile" component={Profile}></Stack.Screen></>
-        }
+        {isSignedIn ? (
+          <>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Profile" component={Profile} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

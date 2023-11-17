@@ -7,7 +7,7 @@ import { ImageBackground } from "react-native-web";
 import { auth, db } from "./fbcontext";
 
 function Home({ route }) {
-  const { id: uid } = route.params;
+  // const { id: uid } = route.params;
   const [user, setUser] = useState(null);
   const [userIsCompleted, setUserIsCompleted] = useState(false);
 
