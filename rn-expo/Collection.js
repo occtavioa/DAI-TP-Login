@@ -1,6 +1,6 @@
 import { addDoc, collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { FlatList, ImageBackground, Modal, Pressable, Text, TextInput, View } from "react-native";
+import { FlatList, ImageBackground, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { db } from "./fbcontext";
 
 function Collection({ route }) {
@@ -23,23 +23,35 @@ function Collection({ route }) {
             .then((qs) => {setTasks(qs.docs)})
             .catch((e) => {console.error(e);})
     }, [tasksCollection])
-    
+
     return (
-        <ImageBackground src={require("./assets/background.png")}>
+        <ImageBackground
+            source={require("./assets/background.png")}
+            style={styles.background}
+        >
             <View>
                 <FlatList data={tasks} renderItem={({item}) => (<>
-                    <Text>{item.data().name}</Text>
-                    <Text>{item.data().state}</Text>
+                    <View key={item.id} style={styles.task}>
+                        <Text style={styles.taskAttribute}>{item.get("name")}</Text>
+                        <TextInput style={styles.taskAttribute} value={item.get("state")}/>
+                    </View>
                 </>)}/>
-                <Pressable onPress={() => {setModalVisible(true)}}><Text>Agregar tarea</Text></Pressable>
-                <Modal visible={modalVisible}>
+                <Pressable style={styles.pressable} onPress={() => {setModalVisible(true)}}><Text style={{color: "white"}}>Agregar tarea</Text></Pressable>
+                <Modal style={styles.modal} visible={modalVisible}>
                     <Pressable onPress={() => {setModalVisible(false)}}><Text>Cerrar</Text></Pressable>
-                    <TextInput value={newTaskName} onChangeText={setNewTaskName}></TextInput>
+                    <View style={styles.newTaskFormControl}>
+                        <Text style={styles.newTaskFormLabel}>Tarea</Text>
+                        <TextInput style={styles.newTaskFormInput} value={newTaskName} onChangeText={setNewTaskName}></TextInput>
+                    </View>
                     <Pressable onPress={async () => {
+                        if(newTaskName.trim() === "") {
+                            console.error("Invalid task name")
+                            return
+                        }
                         try {
-                            const docRef = await addDoc(collection(db, "tasks"), {idCollection: tasksCollection.ref, name: newTaskName, state: "todo"})
-                            const taskDoc = await getDoc(doc(db, "tasks", docRef.id))
-                            setTasks(tasks.toSpliced(0, 0, taskDoc))
+                            const newDocRef = await addDoc(collection(db, "tasks"), {idCollection: tasksCollection.ref, name: newTaskName, state: "todo"})
+                            const newTaskDoc = await getDoc(doc(db, "tasks", newDocRef.id))
+                            setTasks(tasks.toSpliced(0, 0, newTaskDoc))
                         } catch (error) {
                             console.error(error);
                         }
@@ -50,5 +62,42 @@ function Collection({ route }) {
         </ImageBackground>
     )
 }
+
+const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: "cover"
+    },
+    modal: {
+    },
+    task: {
+        display: "flex",
+        flexDirection: "row",
+        width: "15%",
+        justifyContent: "space-between"
+    },
+    taskAttribute: {
+        marginHorizontal: "1%",
+        color: "white"
+    },
+    pressable: {
+        backgroundColor: "blue",
+        padding: 10,
+        borderRadius: 5,
+        alignItems: "center",
+    },
+    newTaskFormControl: {
+        display: "flex",
+        flexDirection: "row",
+        width: "50%",
+        justifyContent: "space-between",
+    },
+    newTaskFormInput: {
+        borderRadius: 5,
+        borderColor: "black",
+        borderWidth: 1
+    },
+    newTaskFormLabel: {}
+})
 
 export default Collection

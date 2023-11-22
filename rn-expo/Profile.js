@@ -165,8 +165,15 @@ function Profile({ route }) {
         </Pressable>
         <Modal visible={modalVisible}>
             <Pressable onPress={() => {setModalVisible(false)}}><Text>Cerrar</Text></Pressable>
-            <TextInput value={newCollectionName} onChangeText={setNewCollectionName}></TextInput>
+            <View style={styles.newCollectionFormControl}>
+              <Text>Colleción</Text>
+              <TextInput style={styles.newCollectionFormInput} value={newCollectionName} onChangeText={setNewCollectionName}></TextInput>
+            </View>
             <Pressable onPress={async () => {
+              if(newCollectionName.trim() === "") {
+                console.error("Invalid collection name")
+                return
+              }
               try {
                 const docRef = await addDoc(collection(db, "taskscollection"), {idUser: userDocRef, name: newCollectionName})
                 const collDoc = await getDoc(doc(db, "taskscollection", docRef.id))
@@ -234,6 +241,17 @@ const styles = StyleSheet.create({
     color: "white",
     backgroundColor: "green",
     borderRadius: 5
+  },
+  newCollectionFormControl: {
+    display: "flex",
+    flexDirection: "row",
+    width: "50%",
+    justifyContent: "space-between",
+  },
+  newCollectionFormInput: {
+    borderRadius: 5,
+    borderColor: "black",
+    borderWidth: 1
   }
 });
 
