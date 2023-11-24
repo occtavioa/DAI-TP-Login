@@ -1,27 +1,44 @@
 import { Link } from "@react-navigation/native";
-import { addDoc, collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Pressable, Text, TextInput, View, StyleSheet, FlatList, Modal } from "react-native";
+import {
+  Pressable,
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  FlatList,
+  Modal,
+} from "react-native";
 import { ImageBackground } from "react-native-web";
 import { auth, db } from "./fbcontext";
 
-function Profile({ route }) {
-  const tasksCollectionsRef = collection(db, "taskscollection")
+function Profile() {
+  const tasksCollectionsRef = collection(db, "taskscollection");
   const [user, setUser] = useState();
-  const [userDocRef, setUserDocRef] = useState()
-  const [tasksCollections, setTasksCollections] = useState([])
+  const [userDocRef, setUserDocRef] = useState();
+  const [tasksCollections, setTasksCollections] = useState([]);
   const [modifiedUser, setModifiedUser] = useState();
   const [readOnlyForm, setReadOnlyForm] = useState(true);
   const [response, setResponse] = useState();
   const [securePasswordEntry, setSecurePasswordEntry] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false)
-  const [newCollectionName, setNewCollectionName] = useState("")
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newCollectionName, setNewCollectionName] = useState("");
 
   useEffect(() => {
     getDoc(doc(db, "users", auth.currentUser.uid))
       .then((ds) => {
         setUser(ds.data());
-        setUserDocRef(ds.ref)
+        setUserDocRef(ds.ref);
       })
       .catch((e) => {
         console.error(e);
@@ -39,19 +56,17 @@ function Profile({ route }) {
   }, [user]);
 
   useEffect(() => {
-    if(typeof userDocRef !== "undefined") {
-      const q = query(tasksCollectionsRef, where("idUser", "==", userDocRef))
+    if (typeof userDocRef !== "undefined") {
+      const q = query(tasksCollectionsRef, where("idUser", "==", userDocRef));
       getDocs(q)
         .then((qs) => {
-          setTasksCollections(qs.docs)
+          setTasksCollections(qs.docs);
         })
-        .catch((e) => {console.error(e);})
+        .catch((e) => {
+          console.error(e);
+        });
     }
-  }, [userDocRef])
-
-  useEffect(() => {
-    console.log(tasksCollections);
-  }, [tasksCollections])
+  }, [userDocRef]);
 
   return (
     <ImageBackground
@@ -135,7 +150,9 @@ function Profile({ route }) {
               <Text style={{ color: "white" }}>Nombre</Text>
               <TextInput
                 style={styles.textField}
-                value={typeof modifiedUser.name === "string" ? modifiedUser.name : ""}
+                value={
+                  typeof modifiedUser.name === "string" ? modifiedUser.name : ""
+                }
                 readOnly={readOnlyForm}
                 onChangeText={(t) => {
                   setModifiedUser({ ...modifiedUser, name: t });
@@ -146,7 +163,11 @@ function Profile({ route }) {
               <Text style={{ color: "white" }}>Apellido</Text>
               <TextInput
                 style={styles.textField}
-                value={typeof modifiedUser.surname === "string" ? modifiedUser.surname : ""}
+                value={
+                  typeof modifiedUser.surname === "string"
+                    ? modifiedUser.surname
+                    : ""
+                }
                 readOnly={readOnlyForm}
                 onChangeText={(t) => {
                   setModifiedUser({ ...modifiedUser, surname: t });
@@ -155,34 +176,65 @@ function Profile({ route }) {
             </View>
           </View>
         )}
-        <Text style={{color: "white"}}>Mis colleciones</Text>
+        <Text style={{ color: "white" }}>Mis colleciones</Text>
         <FlatList
           data={tasksCollections}
-          renderItem={({item}) => <Link to={{screen: "Collection", params: {id: item.id}}} style={styles.taskCollection}>{item.data().name}</Link>}
+          renderItem={({ item }) => (
+            <Link
+              to={{ screen: "Collection", params: { id: item.id } }}
+              style={styles.taskCollection}
+            >
+              {item.data().name}
+            </Link>
+          )}
         />
-        <Pressable style={styles.pressable} onPress={() => {setModalVisible(true)}}>
-          <Text style={{color: "white"}}>Agregar colleción</Text>
+        <Pressable
+          style={styles.pressable}
+          onPress={() => {
+            setModalVisible(true);
+          }}
+        >
+          <Text style={{ color: "white" }}>Agregar colleción</Text>
         </Pressable>
         <Modal visible={modalVisible}>
-            <Pressable onPress={() => {setModalVisible(false)}}><Text>Cerrar</Text></Pressable>
-            <View style={styles.newCollectionFormControl}>
-              <Text>Colleción</Text>
-              <TextInput style={styles.newCollectionFormInput} value={newCollectionName} onChangeText={setNewCollectionName}></TextInput>
-            </View>
-            <Pressable onPress={async () => {
-              if(newCollectionName.trim() === "") {
-                console.error("Invalid collection name")
-                return
+          <Pressable
+            onPress={() => {
+              setModalVisible(false);
+            }}
+          >
+            <Text>Cerrar</Text>
+          </Pressable>
+          <View style={styles.newCollectionFormControl}>
+            <Text>Colleción</Text>
+            <TextInput
+              style={styles.newCollectionFormInput}
+              value={newCollectionName}
+              onChangeText={setNewCollectionName}
+            ></TextInput>
+          </View>
+          <Pressable
+            onPress={async () => {
+              if (newCollectionName.trim() === "") {
+                console.error("Invalid collection name");
+                return;
               }
               try {
-                const docRef = await addDoc(collection(db, "taskscollection"), {idUser: userDocRef, name: newCollectionName})
-                const collDoc = await getDoc(doc(db, "taskscollection", docRef.id))
-                setTasksCollections(tasksCollections.toSpliced(0, 0, collDoc))
+                const docRef = await addDoc(collection(db, "taskscollection"), {
+                  idUser: userDocRef,
+                  name: newCollectionName,
+                });
+                const collDoc = await getDoc(
+                  doc(db, "taskscollection", docRef.id)
+                );
+                setTasksCollections(tasksCollections.toSpliced(0, 0, collDoc));
               } catch (error) {
                 console.error(error);
               }
-              setModalVisible(false)
-            }}><Text>Agregar colección</Text></Pressable>
+              setModalVisible(false);
+            }}
+          >
+            <Text>Agregar colección</Text>
+          </Pressable>
         </Modal>
       </View>
     </ImageBackground>
@@ -240,7 +292,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: "10px",
     color: "white",
     backgroundColor: "green",
-    borderRadius: 5
+    borderRadius: 5,
   },
   newCollectionFormControl: {
     display: "flex",
@@ -251,8 +303,8 @@ const styles = StyleSheet.create({
   newCollectionFormInput: {
     borderRadius: 5,
     borderColor: "black",
-    borderWidth: 1
-  }
+    borderWidth: 1,
+  },
 });
 
 export default Profile;

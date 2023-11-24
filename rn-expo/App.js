@@ -5,7 +5,7 @@ import Login from "./Login";
 import Profile from "./Profile";
 import Register from "./Register";
 import { auth } from "./fbcontext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Collection from "./Collection";
 
 const Stack = createNativeStackNavigator();

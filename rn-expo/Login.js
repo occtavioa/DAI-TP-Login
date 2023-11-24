@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Login({ navigation }) {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState(null);

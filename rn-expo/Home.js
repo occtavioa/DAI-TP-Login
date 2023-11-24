@@ -1,19 +1,14 @@
 import { Link } from "@react-navigation/native";
-import { signOut } from "firebase/auth";
 import {
-  collection,
   doc,
   getDoc,
-  getDocs,
-  query,
-  where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Pressable } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { ImageBackground } from "react-native-web";
 import { auth, db } from "./fbcontext";
 
-function Home({ route }) {
+function Home() {
   const [user, setUser] = useState();
   const [userIsCompleted, setUserIsCompleted] = useState(false);
 
