@@ -1,6 +1,8 @@
+import { Picker } from "@react-native-picker/picker";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -18,6 +20,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import Task from "./Components/Task";
 import { db } from "./fbcontext";
 
 function Collection({ route }) {
@@ -54,6 +57,15 @@ function Collection({ route }) {
       });
   }, [tasksCollection]);
 
+  async function handleTaskDelete(task) {
+    try {
+      await deleteDoc(task.ref)
+      setTasks(tasks.toSpliced(tasks.indexOf(task), 1))
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <ImageBackground
       source={require("./assets/background.png")}
@@ -63,15 +75,7 @@ function Collection({ route }) {
         <FlatList
           data={tasks}
           renderItem={({ item }) => (
-            <>
-              <View key={item.id} style={styles.task}>
-                <Text style={styles.taskAttribute}>{item.get("name")}</Text>
-                <TextInput
-                  style={styles.taskAttribute}
-                  value={item.get("state")}
-                />
-              </View>
-            </>
+            <Task key={item.id} task={item} handleDelete={handleTaskDelete}/>
           )}
         />
         <Pressable
